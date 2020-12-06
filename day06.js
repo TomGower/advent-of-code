@@ -2186,12 +2186,12 @@ const partOne = () => {
     let qs = new Set();
     let curr = inputArray[i];
     for (let j = 0; j < curr.length; j++) {
-      if (curr[j] && curr[j] !== '\n') qs.add(curr[j]);
+      if (curr[j] !== '\n') qs.add(curr[j]);
     }
     count += qs.size;
   }
 
-  console.log('part one', count); //not 7166
+  console.log('part one', count);
 }
 
 partOne();
@@ -2202,10 +2202,9 @@ const partTwo = () => {
     let qs = {};
     let target = 1;
     let curr = inputArray[i];
-    console.log(curr);
     for (let j = 0; j < curr.length; j++) {
       if (curr[j] === '\n') target++;
-      if (curr[j] && curr[j] !== '\n') qs[curr[j]] ? qs[curr[j]]++ : qs[curr[j]] = 1;
+      else qs[curr[j]] ? qs[curr[j]]++ : qs[curr[j]] = 1;
     }
     for (let keys in qs) {
       if (qs[keys] === target) count++;
