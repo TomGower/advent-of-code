@@ -2,11 +2,10 @@ const input = `1000495
 19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,521,x,x,x,x,x,x,x,23,x,x,x,x,x,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,523,x,x,x,x,x,37,x,x,x,x,x,x,13`;
 
 const inputArray = input.split('\n');
-
+const busTimes = inputArray[1].split(',');
 
 const partOne = () => {
   const time = +inputArray[0];
-  const busTimes = inputArray[1].split(',');
   let waitTimes = {};
   for (let i = 0; i < busTimes.length; i++) {
     if (busTimes[i] === 'x') continue;
@@ -27,11 +26,10 @@ const partOne = () => {
   console.log('part one', min * minBus);
 }
 
-partOne();
+// partOne();
 
 const partTwo = () => {
   const departTimes = {};
-  const busTimes = inputArray[1].split(',');
   for (let i = 0; i < busTimes.length; i++) {
     if (busTimes[i] === 'x') continue;
     const busTime = +busTimes[i];
@@ -103,4 +101,65 @@ const partTwo = () => {
   console.log('part two', counter * 19);
 }
 
-partTwo();
+// partTwo();
+
+const partOneOptimized = () => {
+  const time = +inputArray[0];
+  const busTimes = inputArray[1].split(',');
+  let minDiff = Infinity;
+  let minBus = null;
+  busTimes.forEach(bus => {
+    if (bus !== 'x') {
+      let diff = bus - (time % bus);
+      if (diff < minDiff) {
+        minDiff = diff;
+        minBus = bus;
+      }
+    }
+  });
+
+  console.log('part one optimized', minDiff * minBus);
+}
+
+partOneOptimized();
+
+const partTwoGood = () => { //stolen from D-T-P
+
+  function makeBusPositions(busArray) {
+    const busPositions = {};
+  
+    busArray.forEach((bus, index) => {
+      if (bus !== 'x') busPositions[bus] = index;
+    });
+  
+    return busPositions;
+  }
+  
+  function earliestParade(busPositions) {
+    let timeStart = 0;
+    let timeIncrement = 1;
+  
+    const descendingBusPairs = Object.entries(busPositions).map(([bus, gap]) => [Number(bus), Number(gap)]).sort(([bus1, ], [bus2, ]) => (bus2 - bus1));
+    console.table(descendingBusPairs);
+  
+    for (const [bus, gap] of descendingBusPairs) {
+      let time = timeStart;
+  
+      while(true) {
+        if ((bus - (time % bus)) % bus === gap % bus) {
+          timeStart = time;
+          timeIncrement *= bus;
+          console.log(bus, gap, timeStart);
+          break;
+        }
+        time += timeIncrement;
+      }
+    }
+  
+    return timeStart;
+  }
+  
+  console.log("Part 2: ", earliestParade(makeBusPositions(busTimes)));
+}
+
+partTwoGood();
