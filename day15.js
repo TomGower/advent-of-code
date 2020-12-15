@@ -6,11 +6,10 @@ const turnsToTake = 2020;
 
 const partOne = (turns) => {
   const nums = [1,0,15,2,10,13];
-  // const nums = [0, 3, 6];
+  // const nums = [0, 3, 6]; // test case
   const spoken = {};
 
   let prev = null;
-  let curr = null;
   let currentTurn = 1;
   while (currentTurn <= turns) {
     if (currentTurn <= nums.length) {
@@ -26,7 +25,7 @@ const partOne = (turns) => {
         spoken[prev] ? spoken[prev].push(currentTurn) : spoken[prev] = [currentTurn];
       }
     }
-    // console.log(prev);
+    // console.log(prev); // used for proof of concept on test case
     currentTurn++;
   }
 
@@ -80,5 +79,5 @@ const partTwoNotOptimized = (turns) => {
   // console.table(res);
 }
 
-partTwo(2020);
-// partTwo(30000000);
+partTwoNotOptimized(2020);
+// partTwoNotOptimized(30000000);
