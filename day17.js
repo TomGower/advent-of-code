@@ -23,64 +23,76 @@ const partOne = (turns) => {
       for (let j = x-1; j <= x+1; j++) {
         for (let k = y-1; k <= y+1; k++) {
           if (i < 0 || j < 0 || k < 0) continue;
+          if (i === z && (j === x && k === y)) continue;
           if (isActive(i, j, k)) total++;
         }
       }
     }
     return total;
   }
-
+  
   let grid = [];
   grid.push(inputArray);
-  // console.log(grid);
   
-  const generateFirstGrid = () => {
-    let newGrid = [...inputArray];
-    newGrid.unshift(new Array(0).fill(new Array(0)));
-    newGrid.push(new Array(0).fill(new Array(0)));
-    for (let i = 0; i < newGrid.length; i++) {
-      let xArr = [];
-      for (let j = 0; j < newGrid[i].length; j++) {
-        let yArr = [];
-        for (let k = 0; k < newGrid[i][j].length; k++) {
+  let currentTurn = 0;
+  
+  while (currentTurn < turns) {
+    // do stuff
+    const gridLen = grid[0].length;
+    const gridRowLen = grid[0][0].length;
+    const newPlane = new Array(gridLen + 2).fill(new Array(gridRowLen + 2).fill('.'));
+    for (let i = 0; i < grid.length; i++) {
+      for (let j = 0; j < grid[i].length; j++) {
+        grid[i][j] = ['.', ...grid[i][j], '.'];
+      }
+      grid[i].unshift(new Array(gridRowLen + 2).fill('.'));
+      grid[i].push(new Array(gridRowLen + 2).fill('.'));
+    }
+    grid = [newPlane, ...grid, newPlane];
+    // console.log(grid);
+    let nextGrid = [];
+    for (let i = 0; i < grid.length; i++) {
+      let planeArr = [];
+      for (let j = 0; j < grid[i].length; j++) {
+        let gridArr = [];
+        for (let k = 0; k < grid[i][j].length; k++) {
           const neighbors = countActive(i, j, k);
-          const curr = newGrid[i][j][k];
+          const curr = grid[i][j][k];
           if (curr === '#') {
+            // console.log(i, j, k, 'active', neighbors);
             if (neighbors === 2 || neighbors === 3) {
-              yArr.push('#');
+              gridArr.push('#');
             } else {
-              yArr.push('.');
+              gridArr.push('.');
             }
           } else {
-            if (neighbors === 3) yArr.push('#');
-            else yArr.push('.');
+            // console.log(i, j, k, 'inactive', neighbors);
+            if (neighbors === 3) {
+              gridArr.push('#');
+            } else {
+              gridArr.push('.');
+            }
           }
         }
-        xArr.push(yArr);
+        planeArr.push(gridArr);
       }
-      newGrid.push(xArr);
+      nextGrid.push(planeArr);
     }
-    return newGrid;
+  
+    grid = nextGrid;
+    currentTurn++;
   }
-  let firstGrid = generateFirstGrid(grid);
-  console.table('firstGrid', firstGrid);
 
-  // let currentTurn = 0;
-  // while (currentTurn < turns) {
-  //   // do stuff
-  //   nextGrid = new Array(grid.length + 2).fill(() => new Array(grid[0].length + 2)).fill(() => new Array(grid[0][0].length + 2));
+  let activeCount = 0;
+  for (let planes of grid) {
+    for (let rows of planes) {
+      for (let cell of rows) {
+        if (cell === '#') activeCount++;
+      }
+    }
+  }
 
-
-
-
-
-    
-    
-  //   grid = nextGrid;
-  //   currentTurn++;
-  // }
-
-  // console.log('newgrid', grid);
+  console.log('part one', activeCount);
 }
 
-partOne(1);
+partOne(6);
