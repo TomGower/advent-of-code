@@ -209,4 +209,4 @@ const partTwo = (turns) => {
   console.log('part two', result);
 }
 
-partTwo(6);
+partTwo(6); // should be 1692
