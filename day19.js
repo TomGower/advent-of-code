@@ -572,12 +572,25 @@ for (const keys in ruleset) {
   const regexB = /\( "b" \)/gi;
   const regexQuote = /"/g;
   let curr = ruleset[keys];
-  console.log('before', curr);
+  // console.log('before', curr);
   curr = curr.replace(regexA, 'a');
   curr = curr.replace(regexB, 'b');
   curr = curr.replace(regexQuote, '');
-  console.log('after', curr);
+  curr = curr.replace(/\s/g, '');
+  // console.log('after', curr);
   ruleset[keys] = curr;
 }
 
 console.log(ruleset);
+
+const partOne = () => {
+  let testExp = RegExp(`^${ruleset[0]}$`);
+  console.log(testExp);
+  let total = 0;
+  messages.forEach(message => {
+    if (testExp.test(message)) total++;
+  });
+  console.log('part one', total); // holy crap, it is 136
+}
+
+partOne();
