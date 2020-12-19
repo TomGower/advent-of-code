@@ -3,71 +3,55 @@ const input = `1 + 2 * 3 + 4 * 5 + 6
 
 const inputArray = input.split('\n');
 
-const doOperation = (left, right, op) => {
-  if (op === '*') return left * right;
-  if (op === '+') return left + right;
-  if (op === '-') return left - right;
-  if (op === '/') return left / right;
-  throw new Error('unkown operation', op);
-}
-
 const evaluate = str => {
-  let stack = [];
+  let res = null;
+  
+  let op = null;
   for (let i = 0; i < str.length; i++) {
-    if (str[i] !== ' ') stack.push(str[i]);
-  }
-  let curr = undefined;
-  const operations = new Set('+-*/');
-  let parenStack = [];
-  let parenStackIndex = [];
-  let right = undefined;
-  let op = undefined;
-  for (let i = 0; i < stack.length; i++) {
-    const char = str[i];
-    if (char.match(/\d+/)) {
-      if (curr === undefined) {
-        curr = +char;
-      } else if (right === undefined) {
-        right = +char;
-        curr = doOperation(curr, right, op);
-        right = undefined;
-        op = undefined;
-      }
-    } else if (operations.has(char)) {
-      op = char;
-    } else if (char === '(') {
-      parenStack.push(char);
-      parenStackIndex.push(i);
-      let index = i + 1;
-      while (parenStack.length > 0) {
-        if (stack[index] === ')') {
-          if (parenStack.length > 1) {
-            parenStack.pop();
-          } else {
-            if (curr === undefined) {
-              curr = evaluate(stack.slice(parenStartIndex + 1, index));
-              i = index;
-            } else {
-              right = evaluate(stack.slice(parenStackIndex + 1, index));
-              curr = doOperation(curr, right, op);
-              i = index;
-              right = undefined;
-              op = undefined;
-            }
-          }
-        } else if (stack[index] === '(') {
-          parenStack.push('(');
+    let char = str[i];
+    if (char === ' ') continue;
+    if (char === '(') {
+      let stack = [')'];
+      let start = i;
+      i++;
+      while (stack.length) {
+        if (str[i] === '(') {
+          stack.push(')');
         }
-        index++;
+        if (str[i] === ')') {
+          stack.pop();
+        }
+        i++;
       }
+      str = str.slice(0, start) + `${evaluate(str.slice(start + 1, i - 1))}` + str.slice(i);
+      i = start;
+      char = str[i];
+    }
+    if (!Number.isNaN(+char) && res === null) {
+      let num = char;
+      while (!Number.isNaN(+str[i+1])) {
+        i++;
+        num += str[i];
+      }
+      res = +num;
+    } else if (char === '+' || char === '*') {
+      op = char;
+    } else {
+      let num = char;
+      while (!Number.isNaN(+str[i+1])) {
+        i++;
+        num += str[i];
+      }
+      res = op === '+' ? res + (+num) : res * (+num);
     }
   }
-  return curr;
+
+  return res;
 }
 
 let total = 0;
 for (const rows of inputArray) {
-  total += evaluate(rows);
+  console.log(evaluate(rows));
 }
 
-console.table(inputArray);
+console.log('total', total);
