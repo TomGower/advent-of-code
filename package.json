@@ -1,0 +1,24 @@
+{
+  "name": "advent-of-code-2020",
+  "version": "1.0.0",
+  "description": "",
+  "main": "day01.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TomGower/advent-of-code-2020.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TomGower/advent-of-code-2020/issues"
+  },
+  "homepage": "https://github.com/TomGower/advent-of-code-2020#readme",
+  "dependencies": {
+    "@dev-syco/quick-math": "^1.0.14"
+  }
+}
