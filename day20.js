@@ -1736,12 +1736,6 @@ inputArray.forEach(info => {
   tiles[id] = tile;
 });
 
-// console.log(tiles);
-// for (const keys in tiles) {
-//   const tile = tiles[keys];
-//   if (tile.length !== 10) throw new Error(`tile ${keys} has length of ${tile.length}`)
-// }
-
 const matches = {};
 
 for (let keys in tiles) {
@@ -1778,15 +1772,92 @@ for (let keys in tiles) {
   matches[keys] = match;
 }
 // console.log(matches);
+const borders = {};
+const image = new Array(12).fill().map(() => new Array(12));
 
 let product = 1;
 for (const keys in matches) {
-  let counter = new Set();
+  let holder = new Set();
   let match = matches[keys];
   for (const key in match) {
-    match[key].forEach(item => counter.add(item));
+    match[key].forEach(item => holder.add(item));
   }
-  if (Object.keys(match).length <= 2 || counter.size <= 2) product *= +keys;
+  borders[keys] = holder;
+  if (holder.size <= 2) {
+    product *= +keys;
+    if (image[0][0] === undefined) image[0][0] = keys;
+  }
 }
 
 console.log('part one', product); // is 18482479935793
+
+//build the image
+const borderMatch = (key2, val) => borders[key2].has(val);
+const used = new Set();
+used.add(image[0][0]);
+
+// console.log(borders[image[0][0]]);
+let position = 0;
+for (const item of borders[image[0][0]]) {
+  if (position === 0) {
+    image[0][1] = item;
+    position++;
+  } else {
+    image[1][0] = item;
+  }
+  used.add(item);
+}
+
+//build the top row
+const buildTopRow = () => {
+  for (let i = 2; i < image.length; i++) {
+    for (const item of borders[image[0][i-1]]) {
+      if (used.has(item)) continue;
+      if (borders[item].size === 3) {
+        image[0][i] = item;
+        used.add(item);
+      } else if (borders[item].size === 2) {
+        image[0][i] = item;
+        used.add(item);
+      }
+    }
+  }
+}
+
+//build the left column
+const buildLeftColumn = () => {
+  for (let i = 2; i < image.length; i++) {
+    for (const item of borders[image[i-1][0]]) {
+      if (used.has(item)) continue;
+      if (borders[item].size === 3) {
+        image[i][0] = item;
+        used.add(item);
+      } else if (borders[item].size === 2) {
+        image[i][0] = item;
+        used.add(item);
+      }
+    }
+  }
+}
+buildTopRow();
+buildLeftColumn();
+
+const buildImage = () => {
+  for (let i = 1; i < image.length; i++) {
+    for (let j = 1; j < image[0].length; j++) {
+      const left = image[i-1][j];
+      const top = image[i][j-1];
+      for (const item of borders[left]) {
+        if (used.has(item)) continue;
+        if (borderMatch(top, item)) {
+          image[i][j] = item;
+          used.add(item);
+          break;
+        }
+      }
+    }
+  }
+}
+buildImage();
+
+console.table(image);
