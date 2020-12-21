@@ -54,18 +54,18 @@ inputArray.forEach(item => {
 
 const possibleAllergens = {};
 for (let i = 0; i < allergens.length; i++) {
-  const currAllergens = allergens[i];
-  currAllergens.forEach(curr => {
-    if (!possibleAllergens[curr]) {
-      possibleAllergens[curr] = new Set(ingredients[i]);
+  const curr = allergens[i];
+  curr.forEach(allergen => {
+    if (!possibleAllergens[allergen]) {
+      possibleAllergens[allergen] = new Set(ingredients[i]);
     } else {
       const currIngredients = ingredients[i];
-      let oldIngredients = possibleAllergens[curr];
+      let oldIngredients = possibleAllergens[allergen];
       let newIngredients = new Set();
       currIngredients.forEach(ingred => {
         if (oldIngredients.has(ingred)) newIngredients.add(ingred);
       })
-      possibleAllergens[curr] = newIngredients;
+      possibleAllergens[allergen] = newIngredients;
     }
   })
 }
@@ -77,7 +77,7 @@ for (const keys in possibleAllergens) {
     validAllergens.add(all);
   }
 }
-console.log('valid', validAllergens);
+// console.log('valid', validAllergens);
 
 const allIngredients = {};
 for (let i = 0; i < ingredients.length; i++) {
@@ -111,7 +111,7 @@ for (let keys in allergy) {
   res.push(keys);
 }
 res.sort();
-console.log(res);
+// console.log(res);
 for (let i = 0; i < res.length; i++) {
   res[i] = allergy[res[i]];
 }
