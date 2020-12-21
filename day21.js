@@ -81,17 +81,20 @@ for (const keys in allIngredients) {
 
 console.log('part one', total); // 2307
 
-// generate this programmatically
-// start with possibleAllergens
-const allergicIngredients = {
-  'wheat': 'qsjszn',
-  'soy': 'cpxmpc',
-  'shellfish': 'qnvx',
-  'dairy': 'cljf',
-  'fish': 'vvfjj',
-  'nuts': 'qmrps',
-  'eggs': 'frftg',
-  'peanuts': 'hvnkk',
+const allergicIngredients = {};
+while (Object.keys(allergicIngredients).length < validAllergens.size) {
+  for (const keys in possibleAllergens) {
+    let curr = possibleAllergens[keys];
+    if (curr.size === 1) {
+      const val = [...curr].join();
+      allergicIngredients[keys] = val;
+      for (const otherKeys in possibleAllergens) {
+        if (keys === otherKeys) continue;
+        if (possibleAllergens[otherKeys].has(val)) possibleAllergens[otherKeys].delete(val);
+      }
+      delete possibleAllergens[keys];
+    }
+  }
 }
 
 let res = [];
