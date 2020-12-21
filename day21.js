@@ -40,33 +40,23 @@ znkqb kgjm gvlcxv xrdtpr trvv xnxrs btf cgnb mkrzt kvg bqsngs qsjszn jpmvj xsljt
 gblgkb hhdcqk rjfnqc xbggv dlzrg bsgvtrs gxdrk qmrps sbpd tcnc ldbcvh fvrplq fkmj qsjszn ksqp xjjc bnv jjjs hlqknsf zdpbx nqvxt ddbnz gshhq qnvx frtfg lsbmlsf xrdtpr rqsnq kmjrr lbcfst hvnkk tgxsld rmxrlf kgjm mkrzt tqv cljf lchxqhn rvj rpmczd znkqb rbld srxgh cpxmpc jkm vrcd qhssg rzxq tsvk (contains wheat, dairy, shellfish)
 brcnbqc qtsgr vdr rnkbccd bqsngs nchklb kgjm pbvf knfsd kvg trvv xhbzbt hvnkk zfhz zjxssr xrdtpr rpmczd rzxq hqqdr rvj nqvxt mhgxm qsjszn smpg cn brgkb jrtdg jjjs mmpmmh hlcxrd ntcpp sgnqbn cpxmpc ldbcvh vvjvph qmrps djsq cjlgz bsgvtrs rqsnq btf pzglb qnvx sgvk vvfjj sppx xdsxbrx cgnb rqksl bnv khrgj smlp cjjmhlmm cljf mqv pvqv hlqknsf qpdjgp pnzqt ctk thjh xtjfp bkgxfl rpk kcxrlp fkmj lptpdd ddbnz ksqp xsljt vtk tqv hgjjt tsvk hlfg qjgnp qjjss qjcktn ltxqk (contains shellfish, wheat)`;
 
-const inputArray = input.split('\n');
-
-const ingredients = [];
-const allergens = [];
-inputArray.forEach(item => {
-  let split = item.slice(0, -1).split(' (contains ');
-  ingredients.push(split[0].split(' '));
-  allergens.push(split[1].split(',').map(all => all.trim()));
+const recipes = input.split('\n').map(recipe => {
+  let split = recipe.slice(0, -1).split(' (contains ');
+  return [split[0].split(' '), split[1].split(',').map(all => all.trim())];
 })
 
 const possibleAllergens = {};
-for (let i = 0; i < allergens.length; i++) {
-  const curr = allergens[i];
-  curr.forEach(allergen => {
+for (const recipe of recipes) {
+  const ingredients = recipe[0];
+  const allergens = recipe[1];
+  for (const allergen of allergens) {
     if (!possibleAllergens[allergen]) {
-      possibleAllergens[allergen] = new Set(ingredients[i]);
+      possibleAllergens[allergen] = new Set(ingredients);
     } else {
-      const currIngredients = ingredients[i];
-      let oldIngredients = possibleAllergens[allergen];
-      let newIngredients = new Set();
-      currIngredients.forEach(ingred => {
-        if (oldIngredients.has(ingred)) newIngredients.add(ingred);
-      })
-      possibleAllergens[allergen] = newIngredients;
+      possibleAllergens[allergen] = new Set(ingredients.filter(ingredient => possibleAllergens[allergen].has(ingredient)));
     }
-  })
-}
+  };
+};
 
 const validAllergens = new Set();
 for (const keys in possibleAllergens) {
@@ -77,10 +67,9 @@ for (const keys in possibleAllergens) {
 }
 
 const allIngredients = {};
-for (let i = 0; i < ingredients.length; i++) {
-  for (let j = 0; j < ingredients[i].length; j++) {
-    const curr = ingredients[i][j];
-    allIngredients[curr] ? allIngredients[curr]++ : allIngredients[curr] = 1;
+for (const recipe of recipes) {
+  for (const ingredient of recipe[0]) {
+    allIngredients[ingredient] ? allIngredients[ingredient]++ : allIngredients[ingredient] = 1;
   }
 }
 
