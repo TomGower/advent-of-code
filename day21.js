@@ -49,8 +49,6 @@ inputArray.forEach(item => {
   ingredients.push(split[0].split(' '));
   allergens.push(split[1].split(',').map(all => all.trim()));
 })
-// console.log(ingredients);
-// console.log(allergens);
 
 const possibleAllergens = {};
 for (let i = 0; i < allergens.length; i++) {
@@ -69,15 +67,14 @@ for (let i = 0; i < allergens.length; i++) {
     }
   })
 }
-// console.log(possibleAllergens);
-let validAllergens = new Set();
+
+const validAllergens = new Set();
 for (const keys in possibleAllergens) {
   const curr = possibleAllergens[keys];
-  for (const all of curr) {
-    validAllergens.add(all);
+  for (const allergen of curr) {
+    validAllergens.add(allergen);
   }
 }
-// console.log('valid', validAllergens);
 
 const allIngredients = {};
 for (let i = 0; i < ingredients.length; i++) {
@@ -95,9 +92,9 @@ for (const keys in allIngredients) {
 
 console.log('part one', total); // 2307
 
-let res = [];
 // generate this programmatically
-let allergy = {
+// start with possibleAllergens
+const allergicIngredients = {
   'wheat': 'qsjszn',
   'soy': 'cpxmpc',
   'shellfish': 'qnvx',
@@ -107,14 +104,14 @@ let allergy = {
   'eggs': 'frftg',
   'peanuts': 'hvnkk',
 }
-for (let keys in allergy) {
+
+let res = [];
+for (let keys in allergicIngredients) {
   res.push(keys);
 }
 res.sort();
-// console.log(res);
 for (let i = 0; i < res.length; i++) {
-  res[i] = allergy[res[i]];
+  res[i] = allergicIngredients[res[i]];
 }
 
-// console.log(validAllergens);
 console.log('part two', res.join(',')); // cljf,frftg,vvfjj,qmrps,hvnkk,qnvx,cpxmpc,qsjszn
