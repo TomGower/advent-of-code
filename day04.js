@@ -3,16 +3,14 @@ import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
 const inputArray = readFileSync(__dirname + '/inputs/day04.input', 'utf8').split('\n\n');
 
-// const inputArray = input.split('\n\n');
-// console.log(inputArray[0]);
 for (let i = 0; i < inputArray.length; i++) {
   let curr = inputArray[i];
   let lineSplit = curr.split('\n');
   let final = [];
   const len = lineSplit.length;
-  for (let i = 0; i < len; i++) {
-    let input = lineSplit[i].split(' ');
-    if (input !== lineSplit[i]) {
+  for (const item of lineSplit) {
+    const input = item.split(' ');
+    if (input !== item) {
       final = final.concat(input);
     } else {
       final.push(input);
@@ -20,24 +18,20 @@ for (let i = 0; i < inputArray.length; i++) {
   }
   inputArray[i] = final;
 }
-// console.log(inputArray[0]);
 
 function partOne() {
-  let fields = new Set(['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']);
+  let fieldNames = new Set(['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid']);
   let count = 0;
-  // console.log(fields);
 
-  for (let i = 0; i < inputArray.length; i++) {
-    const curr = inputArray[i];
-    let currentFields = new Set();
-    for (let i = 0; i < curr.length; i++) {
-      let field = curr[i].split(':')[0];
-      currentFields.add(field);
+  for (const fields of inputArray) {
+    const currentFields = new Set();
+    for (const field of fields) {
+      const fieldName = field.split(':')[0];
+      currentFields.add(fieldName);
     }
     let hasFields = true;
-    for (let item of fields) {
-      if (currentFields.has(item)) continue;
-      else {
+    for (const name of fieldNames) {
+      if (!currentFields.has(name)) {
         hasFields = false;
         break;
       }
