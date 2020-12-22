@@ -5,7 +5,7 @@ const inputs = readFileSync(__dirname + '/inputs/day16.input', 'utf8').split('\n
 
 const inputFields = inputs[0].split('\n');
 const myTicket = inputs[1].split('\n').slice(1).join('').split(',').map(num => +num);
-const otherTickets = inputs[2].split('\n').slice(1).map(item => item.split(',').map(num => +num));
+const otherTickets = inputs[2].split('\n').slice(1).map(ticket => ticket.split(',').map(num => +num));
 
 const fieldValues = [];
 for (const field of inputFields) {
@@ -35,17 +35,15 @@ partOne();
 
 const partTwo = () => {
   const isValidTicket = ticket => {
-    for (const num of ticket) {
-      return validValues.has(+num);
-    }
+    return ticket.every(num => validValues.has(+num));
   }
 
   const validTickets = otherTickets.filter(isValidTicket);
 
   const fields = {};
-  inputFields.forEach(input => {
-    const fieldName = input.split(':')[0];
-    const fieldNums = input.match(/\d+/g).map(num => +num);
+  for (const field of inputFields) {
+    const fieldName = field.split(':')[0];
+    const fieldNums = field.match(/\d+/g).map(num => +num);
     const fieldSet = new Set();
     for (let i = fieldNums[0]; i <= fieldNums[1]; i++) {
       fieldSet.add(i);
@@ -54,7 +52,7 @@ const partTwo = () => {
       fieldSet.add(j);
     }
     fields[fieldName] = fieldSet;
-  });
+  };
 
   let validFields = {};
 
@@ -72,7 +70,7 @@ const partTwo = () => {
       }
     }
   }
-  // console.log(validFields); // used this to work out by hand the correct indices for departure fields
+  console.log(validFields); // used this to work out by hand the correct indices for departure fields
   const departureIndices = [2, 4, 14, 19, 11, 13];
 
   let product = 1;
