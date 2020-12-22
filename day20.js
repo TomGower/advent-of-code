@@ -4,13 +4,13 @@ const __dirname = path.resolve(path.dirname(''));
 const inputArray = readFileSync(__dirname + '/inputs/day20.input', 'utf8').split('\n\n');
 
 const tiles = {};
-inputArray.forEach(info => {
-  let tile = info.split('\n');
-  let id = tile[0].match(/\d+/)[0];
+for (const input of inputArray) {
+  let tile = input.split('\n');
+  const key = tile[0].match(/\d+/)[0];
   tile.splice(0, 1);
   if (tile.length !== 10 || tile[0].length !== 10) throw new Error('different size input');
-  tiles[id] = tile;
-});
+  tiles[key] = tile;
+}
 
 const matches = {};
 
