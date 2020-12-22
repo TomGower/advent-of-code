@@ -1,13 +1,7 @@
-const input = `.#.#..##
-..#....#
-##.####.
-...####.
-#.##..##
-#...##..
-...##.##
-#...#.#.`;
-
-const inputArray = input.split('\n');
+import { readFileSync } from 'fs';
+import path from 'path';
+const __dirname = path.resolve(path.dirname(''));
+const inputArray = readFileSync(__dirname + '/inputs/day17.input', 'utf8').split('\n');
 
 const partOne = (turns) => {
   const isActive = (h, l, w) => {
@@ -37,7 +31,6 @@ const partOne = (turns) => {
   let currentTurn = 0;
   
   while (currentTurn < turns) {
-    // do stuff
     const gridLen = grid[0].length;
     const gridRowLen = grid[0][0].length;
     const newPlane = new Array(gridLen + 2).fill(new Array(gridRowLen + 2).fill('.'));
@@ -49,7 +42,6 @@ const partOne = (turns) => {
       grid[i].push(new Array(gridRowLen + 2).fill('.'));
     }
     grid = [newPlane, ...grid, newPlane];
-    // console.log(grid);
     let nextGrid = [];
     for (let i = 0; i < grid.length; i++) {
       let planeArr = [];
@@ -59,14 +51,12 @@ const partOne = (turns) => {
           const neighbors = countActive(i, j, k);
           const curr = grid[i][j][k];
           if (curr === '#') {
-            // console.log(i, j, k, 'active', neighbors);
             if (neighbors === 2 || neighbors === 3) {
               gridArr.push('#');
             } else {
               gridArr.push('.');
             }
           } else {
-            // console.log(i, j, k, 'inactive', neighbors);
             if (neighbors === 3) {
               gridArr.push('#');
             } else {
@@ -209,4 +199,4 @@ const partTwo = (turns) => {
   console.log('part two', result);
 }
 
-partTwo(6); // should be 1692
+// partTwo(6); // should be 1692
