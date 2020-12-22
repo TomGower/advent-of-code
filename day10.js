@@ -1,13 +1,13 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
-const inputArray = readFileSync(__dirname + '/inputs/day10.input', 'utf8').split('\n');
+const inputArray = readFileSync(__dirname + '/inputs/day10.input', 'utf8').split('\n').map(voltage => +voltage);
 
 let max = -Infinity;
 let voltages = new Set();
-for (let i = 0; i < inputArray.length; i++) {
-  max = Math.max(max, +inputArray[i]);
-  voltages.add(+inputArray[i]);
+for (const voltage of inputArray) {
+  max = Math.max(max, voltage);
+  voltages.add(voltage);
 }
 
 const partOne = () => {
@@ -39,8 +39,7 @@ const partTwo = () => {
   dp[0] = 1;
   if (voltages.has(1)) dp[1] = dp[0];
   if (voltages.has(2)) dp[2] = dp[0] + dp[1];
-  if (voltages.has(3)) dp[3] = dp[0] + dp[1] + dp[2];
-  for (let i = 4; i <= max; i++) {
+  for (let i = 3; i <= max; i++) {
     if (voltages.has(i)) {
       dp[i] += dp[i-3] + dp[i-2] + dp[i-1];
     }
