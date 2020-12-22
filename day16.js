@@ -55,7 +55,6 @@ const partTwo = () => {
   };
 
   let validFields = {};
-
   for (let keys in fields) {
     for (let i = 0; i < validTickets[0].length; i++) {
       let isValid = true;
@@ -66,16 +65,31 @@ const partTwo = () => {
         }
       }
       if (isValid) {
-        validFields[keys] ? validFields[keys].push(i) : validFields[keys] = [i];
+        validFields[keys] ? validFields[keys].add(i) : validFields[keys] = new Set([i]);
       }
     }
   }
-  console.log(validFields); // used this to work out by hand the correct indices for departure fields
-  const departureIndices = [2, 4, 14, 19, 11, 13];
+
+  const fieldIndices = {};
+  while (Object.keys(fieldIndices).length < Object.keys(fields).length) {
+    for (let keys in validFields) {
+      if (validFields[keys].size === 1) {
+        const val = [...validFields[keys]][0];
+        fieldIndices[keys] = val;
+        for (let otherKeys in validFields) {
+          if (keys === otherKeys) continue;
+          if (validFields[otherKeys].has(val)) validFields[otherKeys].delete(val);
+        }
+        delete validFields[keys];
+      }
+    }
+  }
 
   let product = 1;
-  for (const val of departureIndices) {
-    product *= myTicket[val];
+  for (const fields in fieldIndices) {
+    if (fields.split(' ')[0] === 'departure') {
+      product *= myTicket[fieldIndices[fields]];
+    }
   }
 
   console.log('part two', product); // 3253972369789
