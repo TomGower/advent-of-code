@@ -1,7 +1,8 @@
-const input = `1000495
-19,x,x,x,x,x,x,x,x,41,x,x,x,x,x,x,x,x,x,521,x,x,x,x,x,x,x,23,x,x,x,x,x,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,523,x,x,x,x,x,37,x,x,x,x,x,x,13`;
+import { readFileSync } from 'fs';
+import path from 'path';
+const __dirname = path.resolve(path.dirname(''));
+const inputArray = readFileSync(__dirname + '/inputs/day13.input', 'utf8').split('\n');
 
-const inputArray = input.split('\n');
 const busTimes = inputArray[1].split(',');
 
 const partOne = () => {
@@ -26,7 +27,7 @@ const partOne = () => {
   console.log('part one', min * minBus);
 }
 
-// partOne();
+partOne();
 
 const partTwo = () => {
   const departTimes = {};
@@ -101,7 +102,7 @@ const partTwo = () => {
   console.log('part two', counter * 19);
 }
 
-// partTwo();
+partTwo();
 
 const partOneOptimized = () => {
   const time = +inputArray[0];
@@ -121,7 +122,7 @@ const partOneOptimized = () => {
   console.log('part one optimized', minDiff * minBus);
 }
 
-partOneOptimized();
+// partOneOptimized();
 
 const partTwoGood = () => { //stolen from D-T-P
 
@@ -162,4 +163,4 @@ const partTwoGood = () => { //stolen from D-T-P
   console.log("Part 2: ", earliestParade(makeBusPositions(busTimes)));
 }
 
-partTwoGood();
+// partTwoGood();
