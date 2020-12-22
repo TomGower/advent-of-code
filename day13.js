@@ -8,9 +8,9 @@ const busTimes = inputArray[1].split(',');
 const partOne = () => {
   const time = +inputArray[0];
   let waitTimes = {};
-  for (let i = 0; i < busTimes.length; i++) {
-    if (busTimes[i] === 'x') continue;
-    const busTime = +busTimes[i];
+  for (const bus of busTimes) {
+    if (bus === 'x') continue;
+    const busTime = +bus;
     const quotient = Math.floor(time / busTime);
     const diff = ((quotient + 1) * busTime - time) % busTime;
     waitTimes[busTime] = diff;
@@ -36,7 +36,7 @@ const partTwo = () => {
     const busTime = +busTimes[i];
     departTimes[i] = busTime;
   }
-  console.log(departTimes);
+  // console.log(departTimes);
   // full result of departTimes
   /*
   {
