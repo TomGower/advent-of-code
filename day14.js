@@ -20,14 +20,14 @@ const partOne = () => {
     return res;
   }
 
-  for (let i = 0; i < inputArray.length; i++) {
-    if (inputArray[i].slice(0,3) === 'mas') {
-      mask = inputArray[i].slice(7).split('');
+  for (const masks of inputArray) {
+    if (masks.slice(0,3) === 'mas') {
+      mask = masks.slice(7).split('');
     } else {
-      let vals = inputArray[i].match(/\d+/g);
-      let key = vals[0];
-      let val = (+vals[1]).toString(2).split('');
-      let maskedVal = maskVal(mask, val);
+      const vals = masks.match(/\d+/g);
+      const key = vals[0];
+      const val = (+vals[1]).toString(2).split('');
+      const maskedVal = maskVal(mask, val);
       memo[key] = maskedVal;
     }
   }
@@ -44,13 +44,13 @@ const partOne = () => {
 partOne();
 
 const partTwo = () => {
-  let memo = {};
+  const memo = {};
   let mask = '';
 
   const maskKeys = (mask, key) => {
-    let binKey = (+key).toString(2).padStart(36, '0').split('');
-    let maskedKey = Array.from(mask);
-    let fluctuating = [];
+    const binKey = (+key).toString(2).padStart(36, '0').split('');
+    const maskedKey = Array.from(mask);
+    const fluctuating = [];
     for (let i = 0; i < maskedKey.length; i++) {
       if (maskedKey[i] === '0') {
         maskedKey[i] = binKey[i];
@@ -59,7 +59,7 @@ const partTwo = () => {
         maskedKey[i] = '0';
       }
     }
-    let baseKeyVal = parseInt(maskedKey.join(''), 2);
+    const baseKeyVal = parseInt(maskedKey.join(''), 2);
     let res = new Array(2 ** fluctuating.length).fill(baseKeyVal);
     for (let i = 0; i < fluctuating.length; i++) {
       let nums = [];
@@ -79,17 +79,17 @@ const partTwo = () => {
     return res;
   }
 
-  inputArray.forEach(item => {
-    if (item.slice(0,3) === 'mas') {
-      mask = item.match(/mask = ([01X]+)/)[1];
+  for (const masks of inputArray) {
+    if (masks.slice(0,3) === 'mas') {
+      mask = masks.match(/mask = ([01X]+)/)[1];
     } else {
-      const [key, val] = item.match(/\d+/g);
+      const [key, val] = masks.match(/\d+/g);
       const maskedKeys = maskKeys(mask, key);
-      maskedKeys.forEach(newKey => {
-        memo[newKey] = +val;
-      })
+      for (const keys of maskedKeys) {
+        memo[keys] = +val;
+      }
     }
-  });
+  };
 
   let total = 0;
 
