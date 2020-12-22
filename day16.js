@@ -276,18 +276,18 @@ const otherTickets = `209,822,916,528,93,531,551,797,387,835,278,464,546,945,732
 671,563,276,372,108,946,263,245,688,313,439,203,699,148,360,454,290,755,687,55`;
 
 const inputFieldsArray = inputFields.split('\n');
-const inputs = [];
-inputFieldsArray.forEach(item => {
-  const fieldNums = item.match(/\d+/g);
-  inputs.push([fieldNums[0], fieldNums[1]], [fieldNums[2], fieldNums[3]]);
-});
+const fieldValues = [];
+for (const field of inputFieldsArray) {
+  const fieldNums = field.match(/\d+/g);
+  fieldValues.push([fieldNums[0], fieldNums[1]], [fieldNums[2], fieldNums[3]]);
+}
 
 const validValues = new Set();
-inputs.forEach(input => {
-  for (let i = input[0]; i <= input[1]; i++) {
+for (const values of fieldValues) {
+  for (let i = values[0]; i <= values[1]; i++) {
     validValues.add(i);
   }
-});
+}
 
 const otherTicketsArray = otherTickets.split('\n').map(item => item.split(','));
 
