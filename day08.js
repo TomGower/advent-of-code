@@ -685,20 +685,18 @@ jmp +1`;
 const inputArray = input.split('\n');
 const directions = inputArray.map(item => (item.split(' ')));
 
-const run = (arr) => {
+const run = (arr, partOne = undefined) => {
   let acc = 0;
   let index = 0;
   let visited = new Set();
 
   while (true) {
     if (index === 682) {
-      console.log('reached the end');
       break;
     }
     if (visited.has(index)) {
-      // console.log('done', acc);
+      if (partOne) console.log('part one', acc);
       return null;
-      // break;
     }
     visited.add(index);
     let curr = arr[index];
@@ -715,18 +713,22 @@ const run = (arr) => {
   console.log('part two', acc);
 }
 
-run(directions); //solution 1859
+const partOne = () => {
+  run(directions, partOne);
+}
+
+partOne(); // 1859
 
 const partTwo = () => {
-  for (let i = 0; i < directions.length; i++) {
-    if (directions[i][0] === 'jmp') {
-      directions[i][0] = 'nop';
+  for (const direction of directions) {
+    if (direction[0] === 'jmp') {
+      direction[0] = 'nop';
       if (run(directions)) break;
-      directions[i][0] = 'jmp';
-    } else if (directions[i][0] === 'nop') {
-      directions[i][0] = 'jmp';
+      direction[0] = 'jmp';
+    } else if (direction[0] === 'nop') {
+      direction[0] = 'jmp';
       if (run(directions)) break;
-      directions[i][0] = 'nop';
+      direction[0] = 'nop';
     }
   }
 }
