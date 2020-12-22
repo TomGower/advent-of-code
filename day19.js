@@ -9,15 +9,12 @@ const messages = inputArray[1].split('\n');
 const partOne = () => {
 
   const ruleset = {};
-  rules.forEach(rule => {
-    let ruleArr = rule.split(': ');
-    const key = ruleArr[0];
-    const value = ruleArr[1];
+  for (const rule of rules) {
+    const [key, value] = rule.split(': ');
     ruleset[key] = value;
-  });
+  }
 
   let iterations = 1;
-  let loops = 0;
   while (iterations > 0) {
     iterations = 0;
     for (const keys in ruleset) {
@@ -29,29 +26,21 @@ const partOne = () => {
       }
       ruleset[keys] = keyRefs.join(' ');
     }
-    loops++;
   }
-
-  console.log(loops);
 
   for (const keys in ruleset) {
     const regexA = /\( "a" \)/gi;
     const regexB = /\( "b" \)/gi;
     const regexQuote = /"/g;
     let curr = ruleset[keys];
-    // console.log('before', curr);
     curr = curr.replace(regexA, 'a');
     curr = curr.replace(regexB, 'b');
     curr = curr.replace(regexQuote, '');
     curr = curr.replace(/\s/g, '');
-    // console.log('after', curr);
     ruleset[keys] = curr;
   }
 
-  // console.log(ruleset);
-
-  let testExp = RegExp(`^${ruleset[0]}$`);
-  // console.log(testExp);
+  const testExp = RegExp(`^${ruleset[0]}$`);
   let total = 0;
   messages.forEach(message => {
     if (testExp.test(message)) total++;
