@@ -14,27 +14,27 @@ for (const input of inputArray) {
 
 const matches = {};
 
-for (let keys in tiles) {
-  let match = {};
-  let topRow = tiles[keys][0];
-  let bottomRow = tiles[keys][tiles[keys].length-1];
+for (const keys in tiles) {
+  const match = {};
+  const topRow = tiles[keys][0];
+  const bottomRow = tiles[keys][tiles[keys].length-1];
   let leftCol = '';
   let rightCol = '';
-  for (let rows of tiles[keys]) {
+  for (const rows of tiles[keys]) {
     leftCol += rows[0];
     rightCol += rows[rows.length-1];
   }
-  for (let otherKeys in tiles) {
+  for (const otherKeys in tiles) {
     if (keys === otherKeys) continue;
-    let otherTop = tiles[otherKeys][0];
-    let otherBottom = tiles[otherKeys][tiles[otherKeys].length-1];
+    const otherTop = tiles[otherKeys][0];
+    const otherBottom = tiles[otherKeys][tiles[otherKeys].length-1];
     let otherLeft = '';
     let otherRight = '';
     for (let rows of tiles[otherKeys]) {
       otherLeft += rows[0];
       otherRight += rows[rows.length-1];
     }
-    let otherBorders = [
+    const otherBorders = [
       otherTop, otherTop.split('').reverse().join(''),
       otherBottom, otherBottom.split('').reverse().join(''),
       otherLeft, otherLeft.split('').reverse().join(''),
@@ -47,19 +47,18 @@ for (let keys in tiles) {
   }
   matches[keys] = match;
 }
-// console.log(matches);
 const borders = {};
 const image = new Array(12).fill().map(() => new Array(12));
 
 let product = 1;
 for (const keys in matches) {
-  let holder = new Set();
-  let match = matches[keys];
+  const borderTiles = new Set();
+  const match = matches[keys];
   for (const key in match) {
-    match[key].forEach(item => holder.add(item));
+    match[key].forEach(item => borderTiles.add(item));
   }
-  borders[keys] = holder;
-  if (holder.size <= 2) {
+  borders[keys] = borderTiles;
+  if (borderTiles.size <= 2) {
     product *= +keys;
     if (image[0][0] === undefined) image[0][0] = keys;
   }
@@ -72,7 +71,6 @@ const borderMatch = (key2, val) => borders[key2].has(val);
 const used = new Set();
 used.add(image[0][0]);
 
-// console.log(borders[image[0][0]]);
 let position = 0;
 for (const item of borders[image[0][0]]) {
   if (position === 0) {
