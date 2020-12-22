@@ -1,11 +1,11 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
-const inputArray = readFileSync(__dirname + '/inputs/day12.input', 'utf8').split('\n').map(i => [i[0], +i.slice(1)]);
+const orders = readFileSync(__dirname + '/inputs/day12.input', 'utf8').split('\n').map(i => [i[0], +i.slice(1)]);
 
 const partOne = () => {
-  let pos = [0, 0];
-  let directions = ['E', 'S', 'W', 'N'];
+  const pos = [0, 0];
+  const directions = ['E', 'S', 'W', 'N'];
   let directionIndex = 0;
 
   const move = (dir, mag) => {
@@ -16,8 +16,8 @@ const partOne = () => {
     else throw new Error('invalid direction, this should not be possible', dir);
   }
 
-  inputArray.forEach(item => {
-    const [direction, magnitude] = item;
+  for (const order of orders) {
+    const [direction, magnitude] = order;
     if (direction === 'L') {
       directionIndex = (directionIndex - magnitude/90) % directions.length;
       while (directionIndex < 0) directionIndex += directions.length;
@@ -25,7 +25,7 @@ const partOne = () => {
       directionIndex = (directionIndex + magnitude/90) % directions.length;
     } else if (direction === 'F') move(directions[directionIndex], magnitude);
     else move(direction, magnitude);
-  });
+  };
 
   const res = pos.reduce((acc, curr) => acc + Math.abs(curr), 0);
   console.log('part one', res); // 582
@@ -34,7 +34,7 @@ const partOne = () => {
 partOne();
 
 const partTwo = () => {
-  let pos = [0, 0];
+  const pos = [0, 0];
   let waypoint = [10, -1];
 
   const move = (dir, mag) => {
@@ -63,11 +63,11 @@ const partTwo = () => {
     }
   }
 
-  inputArray.forEach(item => {
-    const [direction, magnitude] = item;
+  for (const order of orders) {
+    const [direction, magnitude] = order;
     if (direction === 'L' || direction === 'R') changeDirection(direction, magnitude / 90);
     else move(direction, magnitude);    
-  });
+  };
 
   const res = pos.reduce((acc, curr) => acc + Math.abs(curr), 0); 
   console.log('part two', res); // 52069
