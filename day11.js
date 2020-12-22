@@ -3,13 +3,21 @@ import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
 const inputArray = readFileSync(__dirname + '/inputs/day11.input', 'utf8').split('\n');
 
-let emptyArray = new Array(inputArray.length).fill([]);
+const countOccupied = (matrix, target) => {
+  let count = 0;
+  for (const row of matrix) {
+    for (const col of row) {
+      if (col === target) count++;
+    }
+  }
+  return count;
+}
 
 const partOne = () => {
   
   const iterate = (prev) => {
     
-    const checkAdjacent = (i, j) => {
+    const countAdjacent = (i, j) => {
       let count = 0;
       if (i > 0 && j > 0) prev[i-1][j-1] === '#' ? count++ : null;
       if (i > 0) prev[i-1][j] === '#' ? count++ : null;
@@ -22,7 +30,7 @@ const partOne = () => {
       return count;
     }
 
-    let next = new Array(inputArray.length);
+    const next = new Array(inputArray.length);
     for (let i = 0; i < next.length; i++) {
       next[i] = [];
     }
@@ -34,13 +42,13 @@ const partOne = () => {
         if (prev[i][j] === '.') {
           next[i][j] = '.';
         } else if (prev[i][j] === 'L') {
-          if (checkAdjacent(i, j) === 0) {
+          if (countAdjacent(i, j) === 0) {
             next[i][j] = '#';
             diffs++;
           }
           else next[i][j] = 'L';
         } else { // prev[i][j] === '#'
-          if (checkAdjacent(i, j) >= 4) {
+          if (countAdjacent(i, j) >= 4) {
             next[i][j] = 'L';
             diffs++;
           }
@@ -54,20 +62,13 @@ const partOne = () => {
 
   let curr = inputArray;
   let nextArray;
-  let iterationCount = 0;
   while (true) {
     nextArray = iterate(curr);
     if (nextArray[1] === 0) break;
     curr = nextArray[0];
-    iterationCount++;
   }
 
-  let occupied = 0;
-  for (let i = 0; i < nextArray[0].length; i++) {
-    for (let j = 0; j < nextArray[0][i].length; j++) {
-      if (nextArray[0][i][j] === '#') occupied++;
-    }
-  }
+  const occupied = countOccupied(nextArray[0], '#');
 
   console.log('part one', occupied);
 }
@@ -78,7 +79,7 @@ const partTwo = () => {
   
   const iterate = (prev) => {
     
-    const checkAdjacent = (arr, i, j) => {
+    const countAdjacent = (arr, i, j) => {
       let count = 0;
       let step = 1;
       while (i-step >= 0 && j-step >= 0) {
@@ -131,7 +132,7 @@ const partTwo = () => {
       return count;
     }
 
-    let next = new Array(inputArray.length);
+    const next = new Array(inputArray.length);
     for (let i = 0; i < next.length; i++) {
       next[i] = [];
     }
@@ -143,14 +144,14 @@ const partTwo = () => {
         if (prev[i][j] === '.') {
           next[i][j] = '.';
         } else if (prev[i][j] === 'L') {
-          if (checkAdjacent(prev, i, j) === 0) {
+          if (countAdjacent(prev, i, j) === 0) {
             next[i][j] = '#';
             diffs++;
           }
           else next[i][j] = 'L';
         } else { // prev[i][j] === '#'
-          let res = checkAdjacent(prev, i, j);
-          if (checkAdjacent(prev, i, j) >= 5) {
+          let res = countAdjacent(prev, i, j);
+          if (countAdjacent(prev, i, j) >= 5) {
             next[i][j] = 'L';
             diffs++;
           }
@@ -164,26 +165,15 @@ const partTwo = () => {
 
   let curr = inputArray;
   let nextArray;
-  let iterationCount = 0;
   while (true) {
     nextArray = iterate(curr);
     if (nextArray[1] === 0) break;
     curr = nextArray[0];
-    iterationCount++;
-    // console.table(curr);
   }
 
-  // console.table(nextArray[0]);
-
-  let occupied = 0;
-  for (let i = 0; i < nextArray[0].length; i++) {
-    for (let j = 0; j < nextArray[0][i].length; j++) {
-      if (nextArray[0][i][j] === '#') occupied++;
-    }
-  }
+  const occupied = countOccupied(nextArray[0], '#');
 
   console.log('part two', occupied);
-  console.log('iterations', iterationCount);
 }
 
 partTwo();
