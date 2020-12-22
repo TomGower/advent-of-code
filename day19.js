@@ -7,7 +7,6 @@ const rules = inputArray[0].split('\n');
 const messages = inputArray[1].split('\n');
 
 const partOne = () => {
-
   const ruleset = {};
   for (const rule of rules) {
     const [key, value] = rule.split(': ');
@@ -42,22 +41,20 @@ const partOne = () => {
 
   const testExp = RegExp(`^${ruleset[0]}$`);
   let total = 0;
-  messages.forEach(message => {
+  for (const message of messages) {
     if (testExp.test(message)) total++;
-  });
-  console.log('part one', total); // holy crap, it is 136
+  }
+  console.log('part one', total); // 136
 }
 
 partOne();
 
 const partTwo = () => {
   const ruleset = {};
-  rules.forEach(rule => {
-    let ruleArr = rule.split(': ');
-    const key = ruleArr[0];
-    const value = ruleArr[1];
+  for (const rule of rules) {
+    const [key, value] = rule.split(': ');
     ruleset[key] = value;
-  });
+  }
   
   ruleset[8] = '42 | 42 908';
   ruleset[11] = '42 31 | 42 9011 31';
@@ -83,7 +80,6 @@ const partTwo = () => {
   ruleset[9811] = '42 31 | 42 9911 31';
   ruleset[9911] = '42 31 | 42 10011 31';
   ruleset[10011] = '42 31'
-
 
   let iterations = 1;
   let loops = 0;
@@ -116,13 +112,12 @@ const partTwo = () => {
     ruleset[keys] = curr;
   }
 
-  let testExp = RegExp(`^${ruleset[0]}$`);
+  const testExp = RegExp(`^${ruleset[0]}$`);
   let total = 0;
-  messages.forEach(message => {
+  for (const message of messages) {
     if (testExp.test(message)) total++;
-  });
-  console.log('part two', total); // is 256
-
+  }
+  console.log('part two', total); // 256
 }
 
 partTwo();
