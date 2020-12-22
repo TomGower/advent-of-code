@@ -53,16 +53,13 @@ Player 2:
 31`;
 
 const hands = input.split('\n\n');
-const handOne = hands[0].split('\n');
-const handTwo = hands[1].split('\n');
-handOne.splice(0, 1);
-handTwo.splice(0, 1);
+let [handOne, handTwo] = hands.map(hand => hand.split('\n').slice(1).map(item => +item));
 
 const playGame = (arr1, arr2) => {
-  while (arr1.length > 0 && arr2.length > 0) {
+  while (arr1.length && arr2.length) {
     const card1 = arr1.shift();
     const card2 = arr2.shift();
-    if (+card1 > +card2) {
+    if (card1 > card2) {
       arr1.push(card1, card2);
     } else {
       arr2.push(card2, card1);
@@ -81,20 +78,12 @@ const calculateTotal = arr => {
 
 console.log('part one', calculateTotal(playGame([...handOne], [...handTwo]))); // 32629
 
-const calculateKey = arr => {
-  let total = 0;
-  for (let i = arr.length - 1, j = 1; i >= 0; i--, j++) {
-    total += 51 ** i * arr[i];
-  }
-  return total;
-}
-
 const playRecursiveGame = (arr1, arr2, isRecursive = false) => {
   const playRound = (arrA, cardA, arrB, cardB) => {
-    if (arrA.length >= +cardA && arrB.length >= cardB) {
-      const winner = playRecursiveGame(arrA.slice(0, +cardA), arrB.slice(0, +cardB), true);
+    if (arrA.length >= cardA && arrB.length >= cardB) {
+      const winner = playRecursiveGame(arrA.slice(0, cardA), arrB.slice(0, cardB), true);
       winner === 1 ? arrA.push(cardA, cardB) : arrB.push(cardB, cardA);
-    } else if (+cardA > +cardB) {
+    } else if (cardA > cardB) {
       arrA.push(cardA, cardB);
     } else {
       arrB.push(cardB, cardA);
@@ -102,28 +91,19 @@ const playRecursiveGame = (arr1, arr2, isRecursive = false) => {
     return [arrA, arrB];
   }
 
-  const memo = {};
-  let rounds = 0;
-  while (arr1.length > 0 && arr2.length > 0) {
-    let total1 = calculateKey(arr1);
-    let total2 = calculateKey(arr2);
-    if (memo[total1]) {
-      if (memo[total1].has(total2)) {
-        if (isRecursive) return 1;
-        return arr1;
-      } else {
-        memo[total1].add(total2);
-      }
+  const seen = new Set();
+  while (arr1.length && arr2.length) {
+    const key = arr1.join('') + '|' + arr2.join('');
+    if (seen.has(key)) {
+      if (isRecursive) return 1;
+      return arr1;
     } else {
-      let val = new Set();
-      val.add(total2);
-      memo[total1] = val;
+      seen.add(key);
     }
     const card1 = arr1.shift();
     const card2 = arr2.shift();
     const res = playRound([...arr1], card1, [...arr2], card2);
     [arr1,arr2] = res;
-    rounds++;
   }
 
   if (isRecursive) return arr1.length > 0 ? 1 : 2;
