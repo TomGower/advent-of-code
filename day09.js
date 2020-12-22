@@ -26,17 +26,16 @@ const partOne = () => {
   for (let k = 25; k < inputArray.length; k++) {
     if (sums.includes(+inputArray[k]) === false) {
       console.log('part one', +inputArray[k]);
-      break;
+      return +inputArray[k];
     }
     update(k);
   }
 
 }
 
-partOne(); // was 466456641
+const target = partOne(); // was 466456641
 
 const partTwo = () => {
-  const target = 466456641;
   let start = 0;
   let end = 0;
   let curr = 0;
