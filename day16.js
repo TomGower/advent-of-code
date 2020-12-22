@@ -345,12 +345,11 @@ const partTwo = () => {
   // console.log(validFields); // used this to work out by hand the correct indices for departure fields
   const departureIndices = [2, 4, 14, 19, 11, 13];
 
-  let myTicketArray = myTicket.split(',');
-  myTicketArray = myTicketArray.map(num => +num);
+  const myTicketVals = myTicket.split(',').map(num => +num);
   let product = 1;
-  departureIndices.forEach(num => {
-    product *= myTicketArray[num];
-  })
+  for (const val of departureIndices) {
+    product *= myTicketVals[val];
+  }
 
   console.log('part two', product); // 3253972369789
 }
