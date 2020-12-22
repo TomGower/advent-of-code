@@ -1,58 +1,8 @@
-const input = `Player 1:
-40
-28
-39
-7
-6
-16
-1
-27
-38
-8
-15
-3
-26
-9
-30
-5
-50
-17
-20
-45
-34
-10
-21
-14
-43
+import { readFileSync } from 'fs';
+import path from 'path';
+const __dirname = path.resolve(path.dirname(''));
+const hands = readFileSync(__dirname + '/inputs/day22.input', 'utf8').split('\n\n');
 
-Player 2:
-4
-49
-35
-11
-32
-12
-48
-23
-47
-22
-46
-13
-18
-41
-24
-36
-37
-44
-19
-42
-33
-25
-2
-29
-31`;
-
-const hands = input.split('\n\n');
 let [handOne, handTwo] = hands.map(hand => hand.split('\n').slice(1).map(item => +item));
 
 const playGame = (arr1, arr2) => {
