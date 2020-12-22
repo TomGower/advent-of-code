@@ -306,10 +306,9 @@ partOne();
 
 const partTwo = () => {
   const isValidTicket = ticket => {
-    ticket.forEach(num => {
-      if (!validValues.has(+num)) return false;
-    });
-    return true;
+    for (const num of ticket) {
+      return validValues.has(+num);
+    }
   }
 
   const validTickets = otherTicketsArray.filter(isValidTicket);
