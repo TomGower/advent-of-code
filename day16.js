@@ -289,13 +289,15 @@ for (const values of fieldValues) {
   }
 }
 
-const otherTicketsArray = otherTickets.split('\n').map(item => item.split(','));
+const otherTicketsArray = otherTickets.split('\n').map(item => item.split(',').map(num => +num));
 
 const partOne = () => {
   let sum = 0;
-  otherTicketsArray.forEach(item => item.forEach(num => {
-    if (!validValues.has(+num)) sum += +num
-  }));
+  for (const otherTicket of otherTicketsArray) {
+    for (const val of otherTicket) {
+      if (!validValues.has(val)) sum += val;
+    }
+  }
 
   console.log('part one', sum); // 25059
 }
