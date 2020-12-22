@@ -5,9 +5,9 @@ const passwordArray = readFileSync(__dirname + '/inputs/day02.input', 'utf8').sp
 
 function partOne() {
   let countValid = 0;
-  
-  for (let i = 0; i < passwordArray.length; i++) {
-    const elements = passwordArray[i].split(' ');
+
+  for (const passwords of passwordArray) {
+    const elements = passwords.split(' ');
     const nums = elements[0].split('-');
     const min = +nums[0];
     const max = +nums[1];
@@ -15,8 +15,7 @@ function partOne() {
     const password = elements[2];
   
     const chars = {};
-    for (let j = 0; j < password.length; j++) {
-      const char = password[j];
+    for (const char of password) {
       chars[char] ? chars[char]++ : chars[char] = 1;
     }
     if (chars[target] && chars[target] >= min && chars[target] <= max) countValid++;
@@ -30,14 +29,13 @@ partOne();
 function partTwo() {
   let countValid = 0;
 
-  for (let i = 0; i < passwordArray.length; i++) {
-    const elements = passwordArray[i].split(' ');
+  for (const passwords of passwordArray) {
+    const elements = passwords.split(' ');
     const nums = elements[0].split('-');
     const first = +nums[0];
     const second = +nums[1];
     const target = elements[1][0];
     const password = elements[2];
-    // console.log(first, second, target, password);
 
     let count = 0; 
     if (password[first - 1] === target) count++;
@@ -46,7 +44,6 @@ function partTwo() {
   }
 
   console.log('part two', countValid);
-
 }
 
 partTwo();
