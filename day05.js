@@ -1,9 +1,7 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
-const inputArray = readFileSync(__dirname + '/inputs/day05.input', 'utf8').split('\n');
-
-// const inputArray = input.split('\n');
+const seats = readFileSync(__dirname + '/inputs/day05.input', 'utf8').split('\n');
 
 const getSeatId = str => {
   let val = 0;
@@ -19,8 +17,8 @@ const getSeatId = str => {
 
 const partOne = () => {
   let maxValue = -Infinity;
-  for (let i = 0; i < inputArray.length; i++) {
-    const seatId = getSeatId(inputArray[i]);
+  for (const seat of seats) {
+    const seatId = getSeatId(seat);
     maxValue = Math.max(maxValue, seatId);
   }
   console.log('part one', maxValue); // 801
@@ -32,8 +30,8 @@ const partTwo = () => {
   const seatIds = new Set();
   let min = Infinity;
   let max = -Infinity;
-  for (let i = 0; i < inputArray.length; i++) {
-    const seatId = getSeatId(inputArray[i]);
+  for (const seat of seats) {
+    const seatId = getSeatId(seat);
     seatIds.add(seatId);
     min = Math.min(min, seatId);
     max = Math.max(max, seatId);
