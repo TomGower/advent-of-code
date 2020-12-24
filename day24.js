@@ -17,10 +17,22 @@ const parseSteps = str => {
 }
 
 const moves = inputArray.map(parseSteps);
+let xMin = Infinity;
+let xMax = -Infinity;
+let yMin = Infinity;
+let yMax = -Infinity;
+
+const updateMinMax = (a, b) => {
+  xMin = Math.min(xMin, +a);
+  xMax = Math.max(xMax, +a);
+  yMin = Math.min(yMin, +b);
+  yMax = Math.max(yMax, +b);
+}
+const makeKey = (a, b) => 'first' + a + '|second' + b;
 
 let destinations = new Set();
 for (const move of moves) {
-  console.log(move);
+  // console.log(move);
   let x = 0;
   let y = 0;
   for (const step of move) {
@@ -46,16 +58,65 @@ for (const move of moves) {
       throw new Error('this should be impossible');
     }
   }
-  const key = `${x}|${y}`;
-  console.log(key);
+  const key = makeKey(x, y);
+  updateMinMax(x, y);
   if (destinations.has(key)) {
-    // console.log('found duplicate', key);
     destinations.delete(key);
   }
   else (destinations.add(key));
 }
 
-// console.log(destinations);
 console.log('part one', destinations.size);
-// not 384
-// not 210
+
+const checkNeighbors = (x, y) => {
+  let total = 0;
+  total += destinations.has(makeKey(x + 2, y)) + destinations.has(makeKey(x - 2, y)) + destinations.has(makeKey(x - 1, y - 1)) +
+    destinations.has(makeKey(x + 1, y + 1)) + destinations.has(makeKey(x + 1, y - 1)) + destinations.has(makeKey(x - 1, y + 1));
+  return total;
+}
+
+let round = 0;
+const rounds = 100;
+while (round < rounds) {
+  if (Math.abs(xMin % 2) === 1) xMin--;
+  if (Math.abs(yMin % 2) === 1) yMin--;
+  if (xMax % 2 === 1) xMax++;
+  if (yMax % 2 === 1) yMax++;
+  let nextDestinations = new Set();
+  for (let i = xMin - 2; i <= xMax + 2; i += 2) {
+    for (let j = yMin - 2; j <= yMax + 2; j += 2) {
+      const neighbors = checkNeighbors(i, j);
+      const key = makeKey(i, j);
+      if (destinations.has(key)) {
+        if (neighbors === 1 || neighbors === 2) {
+          nextDestinations.add(key);
+          updateMinMax(i, j);
+        }
+      } else {
+        if (neighbors === 2) {
+          nextDestinations.add(key);
+          updateMinMax(i, j);
+        }
+      }
+      const neighbors2 = checkNeighbors(i + 1, j + 1);
+      const key2 = makeKey(i + 1, j + 1);
+      if (destinations.has(key2)) {
+        if (neighbors2 === 1 || neighbors2 === 2) {
+          nextDestinations.add(key2);
+          updateMinMax(i + 1, j + 1);
+        }
+      } else {
+        if (neighbors2 === 2) {
+          nextDestinations.add(key2);
+          updateMinMax(i + 1, j + 1);
+        }
+      }
+    }
+  }
+  destinations = nextDestinations;
+  console.log(round, destinations.size);
+  round++;
+}
+
+// console.log(destinations);
+console.log('destinations', destinations.size); // not 692, too low
