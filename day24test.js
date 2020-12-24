@@ -46,12 +46,10 @@ const updateMinMax = (a, b) => {
   yMin = Math.min(yMin, +b);
   yMax = Math.max(yMax, +b);
 }
-const makeKey = (a, b) => a + '|' + b;
-
+const makeKey = (a, b) => 'first' + a + '|second' + b;
 
 let destinations = new Set();
 for (const move of moves) {
-  console.log(move);
   let x = 0;
   let y = 0;
   for (const step of move) {
@@ -94,55 +92,37 @@ const checkNeighbors = (x, y) => {
   return total;
 }
 
-console.log('3 -3 check', checkNeighbors(3, -3), destinations.has(makeKey(3, -3)));
-
 let round = 0;
-const rounds = 9;
+const rounds = 10;
 while (round < rounds) {
-  // do stuff
   if (Math.abs(xMin % 2) === 1) xMin--;
   if (Math.abs(yMin % 2) === 1) yMin--;
   if (xMax % 2 === 1) xMax++;
   if (yMax % 2 === 1) yMax++;
   let nextDestinations = new Set();
-  console.log(xMin, yMin, xMax, yMax, '|', xMin-4, yMin-4);
-  for (let i = xMin - 4; i <= xMax + 2; i += 2) {
-    for (let j = yMin - 4; j <= yMax + 2; j += 2) {
-      const neighbors = checkNeighbors(i, j);
-      // console.log(i, j, neighbors);
-      const key = makeKey(i, j);
-      if (destinations.has(key)) {
-        if (neighbors === 1 || neighbors === 2) {
-          nextDestinations.add(key);
-          updateMinMax(i, j);
-        }
-      } else {
-        if (neighbors === 2) {
-          nextDestinations.add(key);
-          updateMinMax(i, j);
-        }
-      }
-      const neighbors2 = checkNeighbors(i + 1, j + 1);
-      const key2 = makeKey(i + 1, j + 1);
-      if (i + 1 === -13) console.log('-13 j', j)
-      if (i + 1 === -13) console.log(neighbors2);
-      if (destinations.has(key2)) {
-        if (neighbors2 === 1 || neighbors2 === 2) {
-          nextDestinations.add(key2);
-          updateMinMax(i + 1, j + 1);
-        }
-      } else {
-        if (neighbors2 === 2) {
-          nextDestinations.add(key2);
-          updateMinMax(i + 1, j + 1);
+  for (let i = xMin - 2; i <= xMax + 2; i += 2) {
+    for (let j = yMin - 2; j <= yMax + 2; j += 2) {
+      for (let k = 0; k <= 1; k++) {
+        const neighbors = checkNeighbors(i + k, j + k);
+        const key = makeKey(i + k, j+ k);
+        if (destinations.has(key)) {
+          if (neighbors === 1 || neighbors === 2) {
+            nextDestinations.add(key);
+            updateMinMax(i + k, j + k);
+          }
+        } else {
+          if (neighbors === 2) {
+            nextDestinations.add(key);
+            updateMinMax(i + k, j + k);
+          }
         }
       }
     }
   }
   destinations = nextDestinations;
-  console.log(round, destinations.size, destinations);
+  console.log(round, destinations.size);
   round++;
 }
 
-console.log(destinations);
+// console.log(destinations);
 console.log('destinations', destinations.size);
