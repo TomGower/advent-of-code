@@ -28,11 +28,10 @@ const updateMinMax = (a, b) => {
   yMin = Math.min(yMin, +b);
   yMax = Math.max(yMax, +b);
 }
-const makeKey = (a, b) => 'first' + a + '|second' + b;
+const makeKey = (a, b) => 'x:' + a.toString() + ',y:' + b.toString();
 
 let destinations = new Set();
 for (const move of moves) {
-  // console.log(move);
   let x = 0;
   let y = 0;
   for (const step of move) {
@@ -82,41 +81,29 @@ while (round < rounds) {
   if (Math.abs(yMin % 2) === 1) yMin--;
   if (xMax % 2 === 1) xMax++;
   if (yMax % 2 === 1) yMax++;
+  const [currXMin, currYMin, currXMax, currYMax] = [xMin, yMin, xMax, yMax];
   let nextDestinations = new Set();
-  for (let i = xMin - 2; i <= xMax + 2; i += 2) {
-    for (let j = yMin - 2; j <= yMax + 2; j += 2) {
-      const neighbors = checkNeighbors(i, j);
-      const key = makeKey(i, j);
-      if (destinations.has(key)) {
-        if (neighbors === 1 || neighbors === 2) {
-          nextDestinations.add(key);
-          updateMinMax(i, j);
-        }
-      } else {
-        if (neighbors === 2) {
-          nextDestinations.add(key);
-          updateMinMax(i, j);
-        }
-      }
-      const neighbors2 = checkNeighbors(i + 1, j + 1);
-      const key2 = makeKey(i + 1, j + 1);
-      if (destinations.has(key2)) {
-        if (neighbors2 === 1 || neighbors2 === 2) {
-          nextDestinations.add(key2);
-          updateMinMax(i + 1, j + 1);
-        }
-      } else {
-        if (neighbors2 === 2) {
-          nextDestinations.add(key2);
-          updateMinMax(i + 1, j + 1);
+  for (let i = currXMin - 2; i <= currXMax + 4; i += 2) {
+    for (let j = currYMin - 2; j <= currYMax + 4; j += 2) {
+      for (let k = 0; k <= 1; k++) {
+        const neighbors = checkNeighbors(i + k, j + k);
+        const key = makeKey(i + k, j+ k);
+        if (destinations.has(key)) {
+          if (neighbors === 1 || neighbors === 2) {
+            nextDestinations.add(key);
+            updateMinMax(i + k, j + k);
+          }
+        } else {
+          if (neighbors === 2) {
+            nextDestinations.add(key);
+            updateMinMax(i + k, j + k);
+          }
         }
       }
     }
   }
   destinations = nextDestinations;
-  console.log(round, destinations.size);
   round++;
 }
 
-// console.log(destinations);
-console.log('destinations', destinations.size); // not 692, too low
+console.log('part two', destinations.size); // 3979

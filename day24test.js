@@ -46,7 +46,7 @@ const updateMinMax = (a, b) => {
   yMin = Math.min(yMin, +b);
   yMax = Math.max(yMax, +b);
 }
-const makeKey = (a, b) => 'first' + a + '|second' + b;
+const makeKey = (a, b) => 'x:' + a.toString() + ',y:' + b.toString();
 
 let destinations = new Set();
 for (const move of moves) {
@@ -85,25 +85,28 @@ for (const move of moves) {
 
 console.log('part one', destinations.size);
 
-const checkNeighbors = (x, y) => {
+const checkNeighbors = (x, y, blacks) => {
   let total = 0;
-  total += destinations.has(makeKey(x + 2, y)) + destinations.has(makeKey(x - 2, y)) + destinations.has(makeKey(x - 1, y - 1)) +
-    destinations.has(makeKey(x + 1, y + 1)) + destinations.has(makeKey(x + 1, y - 1)) + destinations.has(makeKey(x - 1, y + 1));
+  total += blacks.has(makeKey(x + 2, y)) + blacks.has(makeKey(x - 2, y)) + blacks.has(makeKey(x - 1, y - 1)) +
+    blacks.has(makeKey(x + 1, y + 1)) + blacks.has(makeKey(x + 1, y - 1)) + blacks.has(makeKey(x - 1, y + 1));
   return total;
 }
 
 let round = 0;
-const rounds = 10;
+const rounds = 100;
 while (round < rounds) {
   if (Math.abs(xMin % 2) === 1) xMin--;
   if (Math.abs(yMin % 2) === 1) yMin--;
   if (xMax % 2 === 1) xMax++;
   if (yMax % 2 === 1) yMax++;
+  const [currXMin, currYMin, currXMax, currYMax] = [xMin, yMin, xMax, yMax];
   let nextDestinations = new Set();
-  for (let i = xMin - 2; i <= xMax + 2; i += 2) {
-    for (let j = yMin - 2; j <= yMax + 2; j += 2) {
+  // console.log('start of round', round);
+  // console.log(xMin, yMin, xMax, yMax);
+  for (let i = currXMin - 2; i <= currXMax + 4; i += 2) {
+    for (let j = currYMin - 2; j <= currYMax + 4; j += 2) {
       for (let k = 0; k <= 1; k++) {
-        const neighbors = checkNeighbors(i + k, j + k);
+        const neighbors = checkNeighbors(i + k, j + k, destinations);
         const key = makeKey(i + k, j+ k);
         if (destinations.has(key)) {
           if (neighbors === 1 || neighbors === 2) {
