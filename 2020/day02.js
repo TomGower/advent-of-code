@@ -8,9 +8,7 @@ function partOne() {
 
   for (const passwords of passwordArray) {
     const elements = passwords.split(' ');
-    const nums = elements[0].split('-');
-    const min = +nums[0];
-    const max = +nums[1];
+    const [min, max] = elements[0].split('-').map(v => +v);
     const target = elements[1][0];
     const password = elements[2];
   
@@ -31,9 +29,7 @@ function partTwo() {
 
   for (const passwords of passwordArray) {
     const elements = passwords.split(' ');
-    const nums = elements[0].split('-');
-    const first = +nums[0];
-    const second = +nums[1];
+    const [first, second] = elements[0].split('-').map(v => +v);
     const target = elements[1][0];
     const password = elements[2];
 

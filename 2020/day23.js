@@ -69,7 +69,7 @@ const partTwo = (arr) => {
   let removedVals = new Set();
 
   while (round < 10000000) {
-    if (round === 25000) break;
+    if (round % 100000 === 0) console.log(round);
     start = round % len;
     const startVal = arr[start];
     removedIndex = start + 1;

@@ -7,7 +7,6 @@ for (let i = 0; i < inputArray.length; i++) {
   let curr = inputArray[i];
   let lineSplit = curr.split('\n');
   let final = [];
-  const len = lineSplit.length;
   for (const item of lineSplit) {
     const input = item.split(' ');
     if (input !== item) {

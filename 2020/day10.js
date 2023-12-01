@@ -3,12 +3,12 @@ import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
 const inputArray = readFileSync(__dirname + '/inputs/day10.input', 'utf8').split('\n').map(voltage => +voltage);
 
-let max = -Infinity;
-let voltages = new Set();
-for (const voltage of inputArray) {
-  max = Math.max(max, voltage);
-  voltages.add(voltage);
-}
+let max = Math.max(...inputArray);
+let voltages = new Set(inputArray);
+// for (const voltage of inputArray) {
+//   max = Math.max(max, voltage);
+//   voltages.add(voltage);
+// }
 
 const partOne = () => {
   let curr = 0;
