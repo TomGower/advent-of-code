@@ -26,8 +26,30 @@ for (let j = 0; j < valuesMinusGameInfo.length; j++) {
       if (n > limits[color]) isValid = false;
     }
   }
-  console.log(parts, isValid)
   if (isValid) p1Count += (j + 1);
 }
 
 console.log('part 1', p1Count); // 2101, correct
+
+let p2Res = 0;
+
+for (const game of valuesMinusGameInfo) {
+  const gameParts = game.split(';').map(s => s.trim().split('').filter(v => v !== ',').join('').split(' '));
+  const mins = {
+    'red': 0,
+    'green': 0,
+    'blue': 0
+  }
+  for (const part of gameParts) {
+    for (let i = 0; i < part.length; i += 2) {
+      const n = +part[i];
+      const color = part[i + 1];
+      console.log(n, color);
+      mins[color] = Math.max(mins[color], n);
+    }
+  }
+  console.log(mins);
+  p2Res += Object.values(mins).reduce((acc, curr) => acc * curr, 1);
+}
+
+console.log('part 2', p2Res); // 58269
