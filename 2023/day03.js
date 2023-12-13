@@ -40,3 +40,43 @@ for (let i = 0; i < values.length; i++) {
 }
 
 console.log('part 1', p1); // 526404
+
+function getAdjacentNumbers(row, col) {
+  const res = [];
+  for (let i = -1; i <= 1; i++) {
+    if (row + i < 0 || row + i >= values.length) continue;
+    for (let j = -1; j <= 1; j++) {
+      if (col + j < 0 || col + j >= values.length) continue;
+      if (numbers.has(values[row + i][col + j])) {
+        let s = 0;
+        while (numbers.has(values[row + i][col + j + s]) && col + j + s >= 0) {
+          s--;
+        }
+        let e = 0;
+        while (numbers.has(values[row + i][col + j + e]) && col + j + e < values[row + 1].length) {
+          e++;
+        }
+        const num = +values[row + i].slice(col + j + s + 1, col + j + e);
+        res.push(num);
+        j = j + e;
+      }
+    }
+  }
+  return res;
+}
+
+let p2 = 0;
+
+for (let i = 0; i < values.length; i++) {
+  for (let j = 0; j < values[i].length; j++) {
+    if (values[i][j] === '*') {
+      const nums = getAdjacentNumbers(i, j);
+      console.log(nums);
+      if (nums.length === 2) {
+        p2 += (nums[0] * nums[1]);
+      }
+    }
+  }
+}
+
+console.log('part 2', p2); // 84399773
