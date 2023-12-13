@@ -21,3 +21,16 @@ for (const [t, d] of timeAndDistance) {
 }
 
 console.log('part 1', p1); // 503424
+
+const [longTime, longDistance] = values.map(v => v.split(':')[1].split(' ').filter(v => v).join(''))
+console.log(longTime, longDistance);
+
+let p2 = 0;
+
+for (let i = 1; i < longTime; i++) {
+  const velocity = i;
+  const dist = velocity * (longTime - i);
+  if (dist > longDistance) p2++;
+}
+
+console.log('part 2', p2); // 32607562
