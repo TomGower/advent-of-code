@@ -81,3 +81,46 @@ const p1 = partOne();
 
 console.log('part one', p1); // NOT 7445298, too low
 // IS 9522407
+
+const EXPANDING_FACTOR = 1000000;
+// const EXPANDING_FACTOR = 100;
+
+function getExpandedDistances(s1, s2, expandingRows, expandingCols) {
+  const [r1, c1] = s1;
+  const [r2, c2] = s2;
+  const minRow = Math.min(r1, r2);
+  const maxRow = Math.max(r1, r2);
+  const minCol = Math.min(c1, c2);
+  const maxCol = Math.max(c1, c2);
+  let dist = maxRow - minRow + maxCol - minCol;
+  for (let i = minRow; i < maxRow; i++) {
+    if (expandingRows.has(i)) dist += EXPANDING_FACTOR - 1;
+  }
+  for (let j = minCol; j < maxCol; j++) {
+    if (expandingCols.has(j)) dist += EXPANDING_FACTOR - 1;
+  }
+  return dist;
+}
+
+function partTwo() {
+  const input = readFileSync(__dirname + '/2023/inputs/day11.input', 'utf8').split('\n');
+  const expandingRows = new Set(findExpandingRows(input));
+  const expandingCols = new Set(findExpandingCols(input));
+
+  const starLocations = getStarLocations(input);
+
+  let res = 0;
+  for (let i = 0; i < starLocations.length - 1; i++) {
+    const s1 = starLocations[i];
+    for (let j = i + 1; j < starLocations.length; j++) {
+      const s2 = starLocations[j];
+      res += getExpandedDistances(s1, s2, expandingRows, expandingCols);
+    }
+  }
+  return res;
+}
+
+const p2 = partTwo();
+
+console.log('part two', p2); // NOT 1117642522407, too high
+// IS 544723432977
