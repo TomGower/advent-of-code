@@ -26,3 +26,15 @@ function findLastNumber(history) {
 const p1 = values.map(flattenDiffs).map(findLastNumber).reduce((acc, curr) => acc + curr, 0);
 
 console.log('part one', p1); // 1953784198
+
+function findFirstNumber(history) {
+  let acc = 0;
+  for (let i = history.length - 1; i >= 0; i--) {
+    acc = history[i][0] - acc;
+  }
+  return acc;
+}
+
+const p2 = values.map(flattenDiffs).map(findFirstNumber).reduce((acc, curr) => acc + curr, 0);
+
+console.log('part two', p2);
