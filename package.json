@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/TomGower/advent-of-code-2020#readme",
   "dependencies": {
+    "@datastructures-js/priority-queue": "^6.3.0",
     "@dev-syco/quick-math": "^1.0.14",
     "lodash": "^4.17.21"
   },
