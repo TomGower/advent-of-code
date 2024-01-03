@@ -21,6 +21,7 @@
   "dependencies": {
     "@datastructures-js/priority-queue": "^6.3.0",
     "@dev-syco/quick-math": "^1.0.14",
+    "@graph-algorithm/minimum-cut": "^2.0.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
