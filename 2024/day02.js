@@ -47,6 +47,10 @@ function gap1to3(arr) {
   return true;
 }
 
+function isValidUnchanged(arr) {
+  return (isIncreasing(arr) || isDecreasing(arr)) && gap1to3(arr);
+}
+
 function partOne() {
   const reports = values.map((v) => v.split(' ').map(Number));
   return reports.filter(isValidUnchanged).length;
@@ -60,25 +64,17 @@ function isMostlyDecreasing(arr) {
   for (let i = 1; i < arr.length; i++) {
     const diff = prev - arr[i];
     if (diff > 3 || diff < 1) {
-      // if (i === 1) return isDecreasing(arr.slice(1)) && gap1to3(arr.slice(1));
       if (hasMistake) return false;
       hasMistake = true;
       if (i === 1) {
         const v1 = [arr[0], ...arr.slice(2)];
-        if (isValidUnchanged(v1) || isValidUnchanged(arr.slice(1))) return true;
-        continue;
+        return isValidUnchanged(v1) || isValidUnchanged(arr.slice(1));
       }
-      // const oldDiff = arr[i - 2] - arr[i];
-      // if (oldDiff >= 1 && oldDiff <= 3) prev = Math.min(arr[i], prev);
     } else {
       prev = arr[i];
     }
   }
   return true;
-}
-
-function isValidUnchanged(arr) {
-  return (isIncreasing(arr) || isDecreasing(arr)) && gap1to3(arr);
 }
 
 function isMostlyIncreasing(arr) {
@@ -91,27 +87,10 @@ function isMostlyIncreasing(arr) {
       hasMistake = true;
       if (i === 1) {
         const v1 = [arr[0], ...arr.slice(2)];
-        if (isValidUnchanged(v1) || isValidUnchanged(arr.slice(1))) return true;
-        continue;
+        return isValidUnchanged(v1) || isValidUnchanged(arr.slice(1));
       }
       const oldDiff = arr[i] - arr[i - 2];
       if (oldDiff >= 1 && oldDiff <= 3) prev = arr[i];
-    } else {
-      prev = arr[i];
-    }
-  }
-  return true;
-}
-
-function oneInvalidLevelPermitted(arr) {
-  let hasMistake = false;
-  let prev = arr[0];
-  for (let i = 1; i < arr.length; i++) {
-    const diff = Math.abs(arr[i] - prev);
-    if (diff < 1 || diff > 3) {
-      if (hasMistake) return false;
-      hasMistake = true;
-      prev = arr[i - 1];
     } else {
       prev = arr[i];
     }
@@ -163,8 +142,3 @@ function partTwo() {
 }
 
 console.log('The answer to Part Two may be', partTwo());
-// not 385, too low
-// not 399, too low
-// not 896, too high
-// not 408
-// not 412
