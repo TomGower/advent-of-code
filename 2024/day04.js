@@ -15,7 +15,18 @@ S.S.S.S.SS
 ..M.M.M.MM
 .X.X.XMASX`.split('\n');
 
-const grid = input.map((v) => v.split(''));
+const test2 = `.M.S......
+..A..MSMS.
+.M.S.MAA..
+..A.ASMSM.
+.M.S.M....
+..........
+S.S.S.S.S.
+.A.A.A.A..
+M.M.M.M.M.
+..........`.split('\n');
+
+const grid = input;
 
 function findWord(word, grid, row, col) {
   const rows = grid.length;
@@ -106,7 +117,6 @@ function partOne() {
     for (let j = 0; j < grid[i].length; j++) {
       if (grid[i][j] === 'X') {
         count += findWord('XMAS', grid, i, j);
-        console.log(count);
       }
     }
   }
@@ -116,6 +126,36 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function hasMAS(grid, row, col) {
+  if (
+    row === 0 ||
+    row === grid.length - 1 ||
+    col === 0 ||
+    col === grid[0].length - 1
+  )
+    return false;
+  if (
+    (grid[row - 1][col - 1] === 'M' && grid[row + 1][col + 1] === 'S') ||
+    (grid[row - 1][col - 1] === 'S' && grid[row + 1][col + 1] === 'M')
+  ) {
+    if (grid[row - 1][col + 1] === 'M' && grid[row + 1][col - 1] === 'S')
+      return true;
+    if (grid[row - 1][col + 1] === 'S' && grid[row + 1][col - 1] === 'M')
+      return true;
+  }
+  return false;
+}
+
+function partTwo() {
+  let count = 0;
+  for (let i = 0; i < grid.length; i++) {
+    for (let j = 0; j < grid[0].length; j++) {
+      if (grid[i][j] === 'A') {
+        if (hasMAS(grid, i, j)) count++;
+      }
+    }
+  }
+  return count;
+}
 
 console.log('The answer to Part Two may be', partTwo());
