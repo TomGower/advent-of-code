@@ -32,6 +32,29 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function concatCanMakeValid(target, nums, idx, prev) {
+  if (idx === nums.length) return target === prev;
+  if (prev > target) return false;
+  return (
+    concatCanMakeValid(target, nums, idx + 1, prev + nums[idx]) ||
+    concatCanMakeValid(target, nums, idx + 1, prev * nums[idx]) ||
+    concatCanMakeValid(target, nums, idx + 1, Number('' + prev + nums[idx]))
+  );
+}
+
+console.log(concatCanMakeValid(7290, [6, 8, 6, 15], 1, 6));
+console.log(concatCanMakeValid(156, [15, 6], 1, 15));
+
+function partTwo() {
+  let res = 0;
+  for (const [target, nums] of targetAndNumbers) {
+    if (isValidEquation(target, nums, 1, nums[0])) {
+      res += target;
+    } else if (concatCanMakeValid(target, nums, 1, nums[0])) {
+      res += target;
+    }
+  }
+  return res;
+}
 
 console.log('The answer to Part Two may be', partTwo());
