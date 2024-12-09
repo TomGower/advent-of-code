@@ -36,9 +36,10 @@ function markAntinodes(nodes, grid) {
   }
 }
 
+const nodeMap = findNodes(input);
+
 function partOne() {
   const grid = new Array(rows).fill().map((_) => new Array(cols).fill('.'));
-  const nodeMap = findNodes(input);
   for (const nodes of nodeMap.values()) {
     markAntinodes(nodes, grid);
   }
@@ -52,6 +53,34 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function markHarmonicAntinodes(nodes, grid) {
+  for (let i = 0; i < nodes.length - 1; i++) {
+    const [r1, c1] = nodes[i];
+    for (let j = i + 1; j < nodes.length; j++) {
+      const [r2, c2] = nodes[j];
+      grid[r1][c1] = '#';
+      grid[r2][c2] = '#';
+      const slope = (r2 - r1) / (c2 - c1);
+      for (let k = 0; k < cols; k++) {
+        const row = r1 + slope * (k - c1);
+        if (row < 0 || row >= rows || row % 1 !== 0) continue;
+        grid[row][k] = '#';
+      }
+    }
+  }
+}
+
+function partTwo() {
+  const grid = new Array(rows).fill().map((_) => new Array(cols).fill('.'));
+  for (const nodes of nodeMap.values()) {
+    markHarmonicAntinodes(nodes, grid);
+  }
+  return grid.reduce(
+    (total, row) =>
+      total +
+      row.reduce((subtotal, cell) => subtotal + (cell === '#' ? 1 : 0), 0),
+    0
+  );
+}
 
 console.log('The answer to Part Two may be', partTwo());
