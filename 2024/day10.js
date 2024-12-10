@@ -49,8 +49,44 @@ function partOne() {
 }
 
 console.log('The answer to Part One may be', partOne());
-// not 1764, too high
 
-function partTwo() {}
+function countDistinctTrailheads(row, col, next) {
+  if (
+    row < 0 ||
+    row >= rows ||
+    col < 0 ||
+    col >= cols ||
+    grid[row][col] !== next
+  )
+    return 0;
+  if (next === 9) {
+    return 1;
+  }
+  const dirs = [
+    [-1, 0],
+    [1, 0],
+    [0, -1],
+    [0, 1],
+  ];
+  let res = 0;
+  for (const [dr, dc] of dirs) {
+    res += countDistinctTrailheads(row + dr, col + dc, next + 1);
+  }
+  return res;
+}
+
+function partTwo() {
+  let res = 0;
+
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (grid[i][j] === 0) {
+        res += countDistinctTrailheads(i, j, 0);
+      }
+    }
+  }
+
+  return res;
+}
 
 console.log('The answer to Part Two may be', partTwo());
