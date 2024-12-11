@@ -8,7 +8,7 @@ const input = readFileSync(__dirname + '/inputs/day06.input', 'utf8').split(
 const rows = input.length;
 const cols = input[0].length;
 
-function getPosition(input, target) {
+function getStartPosition(input, target) {
   for (let i = 0; i < rows; i++) {
     for (let j = 0; j < cols; j++) {
       if (input[i][j] === target) return [i, j];
@@ -63,7 +63,7 @@ function moveGuard(input, grid, direction, row, col) {
 function partOne() {
   const grid = new Array(rows).fill().map((_) => new Array(cols).fill(false));
 
-  const [row, col] = getPosition(input, '^');
+  const [row, col] = getStartPosition(input, '^');
   moveGuard(input, grid, 'up', row, col);
 
   return grid.reduce(
@@ -75,6 +75,44 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function hasCycle(editableMap, row, col) {
+  const seen = new Set();
+  let direction = 'up';
+
+  while (true) {
+    const key = `${row}~${col}~${direction}`;
+    if (seen.has(key)) return true;
+    seen.add(key);
+    let [nr, nc] = getNextCell(direction, row, col);
+    if (isOutOfBounds(nr, nc)) return false;
+    if (editableMap[nr][nc] === '#') {
+      while (!isOutOfBounds(nr, nc) && editableMap[nr][nc] === '#') {
+        [direction, nr, nc] = getNextDirection(direction, nr, nc);
+      }
+    }
+    [row, col] = [nr, nc];
+  }
+
+  return false;
+}
+
+function partTwo() {
+  const [row, col] = getStartPosition(input, '^');
+  const editableMap = input.map((v) => v.split(''));
+
+  let obstacleCount = 0;
+
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (editableMap[i][j] === '.') {
+        editableMap[i][j] = '#';
+        if (hasCycle(editableMap, row, col)) obstacleCount++;
+        editableMap[i][j] = '.';
+      }
+    }
+  }
+
+  return obstacleCount;
+}
 
 console.log('The answer to Part Two may be', partTwo());
