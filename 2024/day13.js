@@ -46,7 +46,7 @@ function findMathPath(a, b, prize) {
   const [bx, by] = b;
   const [px, py] = prize;
   let res = Infinity;
-  for (let i = 0; i <= 100; i++) {
+  for (let i = 0; i <= Math.min(px / ax, py / ay); i++) {
     let x = i * ax,
       y = i * ay;
     if ((px - x) % bx === 0 && (px - x) / bx === (py - y) / by) {
@@ -68,6 +68,31 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+const diff = 10000000000000;
+const updatePrizeLocations = allDirections.map(([a, b, prize]) => [
+  a,
+  b,
+  [prize[0] + diff, prize[1] + diff],
+]);
+
+function findAlgebraPath(a, b, prize) {
+  const [ax, ay] = a;
+  const [bx, by] = b;
+  const [px, py] = prize;
+  const aMoves = Math.round((px * by - py * bx) / (ax * by - ay * bx));
+  const bMoves = Math.round((ax * py - ay * px) / (ax * by - ay * bx));
+  if (ax * aMoves + bx * bMoves === px && ay * aMoves + by * bMoves === py) {
+    return aMoves * 3 + bMoves;
+  }
+  return 0;
+}
+
+function partTwo() {
+  let total = 0;
+  for (const [a, b, prize] of updatePrizeLocations) {
+    total += findAlgebraPath(a, b, prize);
+  }
+  return total;
+}
 
 console.log('The answer to Part Two may be', partTwo());
