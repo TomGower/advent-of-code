@@ -30,12 +30,7 @@ function findRobotPosition(x, y, dx, dy, time = 100) {
   return [finalX, finalY];
 }
 
-function partOne() {
-  const grid = new Array(height).fill().map((_) => new Array(width).fill(0));
-  for (const [[x, y], [dx, dy]] of robotDirections) {
-    const [fx, fy] = findRobotPosition(x, y, dx, dy);
-    grid[fy][fx]++;
-  }
+function calculateQuadrants(grid) {
   const midRow = Math.floor(height / 2);
   const midCol = Math.floor(width / 2);
   let ul = 0,
@@ -52,11 +47,62 @@ function partOne() {
       if (i > midRow && j > midCol) br += grid[i][j];
     }
   }
+  return [ul, ur, bl, br];
+}
+
+function partOne() {
+  const grid = new Array(height).fill().map((_) => new Array(width).fill(0));
+  for (const [[x, y], [dx, dy]] of robotDirections) {
+    const [fx, fy] = findRobotPosition(x, y, dx, dy);
+    grid[fy][fx]++;
+  }
+  const [ul, ur, bl, br] = calculateQuadrants(grid);
   return ul * ur * bl * br;
 }
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function takeTurn(robotPositions, move) {
+  let grid = new Array(height).fill().map((_) => new Array(width).fill('.'));
+  const nextPositions = [];
+  for (const [[x, y], [dx, dy]] of robotPositions) {
+    let nextX = (x + dx + width) % width;
+    let nextY = (y + dy + height) % height;
+    grid[nextY][nextX] = '#';
+    nextPositions.push([
+      [nextX, nextY],
+      [dx, dy],
+    ]);
+  }
+  const [ul, ur, bl, br] = calculateQuadrants(grid);
+  const product = ul * ur * bl * br;
+  if (move === 7519) {
+    for (const r of grid) {
+      console.log(r.join(''));
+    }
+  }
+  return [product, nextPositions];
+}
+
+function partTwo() {
+  let min = Infinity;
+  let product;
+  let minTurn;
+  let robotPositions = robotDirections;
+
+  const candidates = [];
+
+  for (let i = 0; i < height * width; i++) {
+    [product, robotPositions] = takeTurn(robotPositions, i);
+    if (product < min) {
+      min = product;
+      minTurn = i;
+      candidates.push(i);
+      console.log('found a new candiate', product, i + 1);
+    }
+  }
+  return minTurn;
+}
 
 console.log('The answer to Part Two may be', partTwo());
+// rassin frassin off by 1 errors
