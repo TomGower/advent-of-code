@@ -1,22 +1,13 @@
-import { createDiffieHellmanGroup } from 'crypto';
 import { readFileSync } from 'fs';
 import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
 const input = readFileSync(__dirname + '/inputs/day14a.input', 'utf8');
 const robots = input.split('\n');
 const robotDirections = robots.map((r) => {
-  const [pos, v] = r.split(' ');
-  const [_marker, coords] = pos.split('=');
-  const [x, y] = coords.split(',').map(Number);
-  const [_v, dirs] = v.split('=');
-  const [dx, dy] = dirs.split(',').map(Number);
-  return [
-    [x, y],
-    [dx, dy],
-  ];
+  let exp = /p=(?<x>\d+),(?<y>\d+) v=(?<dx>-?\d+),(?<dy>-?\d+)/;
+  const { x, y, dx, dy } = exp.exec(r).groups;
+  return [[x, y].map(Number), [dx, dy].map(Number)];
 });
-
-console.log(robots.length);
 
 const width = 11;
 const height = 7;
@@ -62,7 +53,6 @@ function partOne() {
 }
 
 console.log('The answer to Part One may be', partOne());
-// 206388000 too low
 
 function partTwo() {}
 
