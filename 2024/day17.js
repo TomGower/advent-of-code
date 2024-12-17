@@ -9,7 +9,8 @@ const registers = individualRegisters
   .map((v) => v.split(' ').at(-1))
   .map(Number);
 
-const program = programLine.split(' ')[1].split(',').map(Number);
+const programString = programLine.split(' ')[1];
+const program = programString.split(',').map(Number);
 
 function getComboValue(operand, registers) {
   if (operand <= 3) return operand;
@@ -31,10 +32,10 @@ function process(program, registers) {
       registers[0] = Math.trunc(a / 2 ** operand);
     }
     if (opcode === 1) {
-      registers[1] = b ^ operand;
+      registers[1] = (b ^ operand) >>> 0;
     }
     if (opcode === 2) {
-      registers[1] = getComboValue(operand, registers) % 8;
+      registers[1] = getComboValue(operand, registers) & 7;
     }
     if (opcode === 3) {
       if (a !== 0) {
@@ -45,7 +46,7 @@ function process(program, registers) {
       registers[1] = b ^ c;
     }
     if (opcode === 5) {
-      output.push(getComboValue(operand, registers) % 8);
+      output.push(getComboValue(operand, registers) & 7);
     }
     if (opcode === 6) {
       operand = getComboValue(operand, registers);
@@ -58,16 +59,29 @@ function process(program, registers) {
     pointer = nextPointer;
   }
 
-  return output.join(',');
+  return output;
 }
 
 function partOne() {
-  return process(program, registers);
+  return process(program, registers).join(',');
 }
 
 console.log('The answer to Part One may be', partOne());
-// 21:40, most of that saying "uh..."
 
-function partTwo() {}
+function partTwo() {
+  let j = 0;
+  for (let i = program.length - 1; i >= 0; i--) {
+    j *= 8;
+    const currTarget = program.slice(i).join(',');
+    while (true) {
+      const curr = process(program, [j, 0, 0]).join(',');
+      if (curr === currTarget) {
+        break;
+      }
+      j++;
+    }
+  }
+  return j;
+}
 
 console.log('The answer to Part Two may be', partTwo());
