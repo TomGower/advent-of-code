@@ -5,10 +5,6 @@ const input = readFileSync(__dirname + '/inputs/day18.input', 'utf8');
 const obstacles = input.split('\n').map((v) => v.split(',').map(Number));
 const gridSize = 71;
 
-const grid = new Array(gridSize)
-  .fill()
-  .map((_) => new Array(gridSize).fill(true));
-
 const dirs = [
   [-1, 0],
   [1, 0],
@@ -17,6 +13,10 @@ const dirs = [
 ];
 
 function move(turnCount) {
+  const grid = new Array(gridSize)
+    .fill()
+    .map((_) => new Array(gridSize).fill(true));
+
   for (let i = 0; i < turnCount; i++) {
     const [c, r] = obstacles[i];
     grid[r][c] = false;
@@ -60,6 +60,24 @@ function partOne() {
 console.log('The answer to Part One may be', partOne());
 // 12:30, moderately sloppy
 
-function partTwo() {}
+function partTwo() {
+  let lo = 1;
+  let hi = obstacles.length - 1;
+  let res = Infinity;
+
+  while (lo <= hi) {
+    const mid = lo + Math.floor((hi - lo) / 2);
+    const stepCount = move(mid);
+    if (stepCount === -1) {
+      hi = mid - 1;
+      res = mid;
+    } else {
+      lo = mid + 1;
+    }
+  }
+
+  return obstacles[res - 1];
+}
 
 console.log('The answer to Part Two may be', partTwo());
+// 18:30, stupid off by 1 errors
