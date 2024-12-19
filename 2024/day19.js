@@ -32,6 +32,28 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function waysToMakeTowels(patterns, target) {
+  const len = target.length;
+  const memo = new Array(len + 1).fill(0);
+  const patternSet = new Set(patterns);
+
+  memo[0] = 1;
+  for (let i = 0; i < len; i++) {
+    if (!memo[i]) continue;
+    for (let j = i + 1; j <= len; j++) {
+      if (patternSet.has(target.slice(i, j))) memo[j] += memo[i];
+    }
+  }
+
+  return memo[len];
+}
+
+function partTwo() {
+  let count = 0;
+  for (const target of targets) {
+    count += waysToMakeTowels(towelPatterns, target);
+  }
+  return count;
+}
 
 console.log('The answer to Part Two may be', partTwo());
