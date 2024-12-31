@@ -4,14 +4,6 @@ const __dirname = path.resolve(path.dirname(''));
 const input = readFileSync(__dirname + '/inputs/day22.input', 'utf8');
 const secretNumbers = input.split('\n').map(Number);
 
-function mix(num, secret) {
-  return num ^ secret;
-}
-
-function prune(num) {
-  return num % 16777216;
-}
-
 function findNextSecretNumber(init) {
   const mult = init * 64;
   init = init ^ mult;
@@ -42,6 +34,33 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function findPriceSequence(num, map) {
+  const seen = new Set();
+  const changes = [];
+  for (let i = 0; i < 2000; i++) {
+    const next = findNextSecretNumber(num);
+    const delta = (next % 10) - (num % 10);
+    changes.push(delta);
+    num = next;
+    if (changes.length > 3) {
+      const key = changes.slice(i - 3).join('~');
+      if (seen.has(key)) continue;
+      seen.add(key);
+      map.set(key, (map.get(key) ?? 0) + (next % 10));
+    }
+  }
+}
+
+function partTwo() {
+  const map = new Map();
+  for (const num of secretNumbers) {
+    findPriceSequence(num, map);
+  }
+  let max = 0;
+  for (const val of map.values()) {
+    max = Math.max(max, val);
+  }
+  return max;
+}
 
 console.log('The answer to Part Two may be', partTwo());
