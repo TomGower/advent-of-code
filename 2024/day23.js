@@ -31,8 +31,9 @@ function findTrios(map) {
   return seen;
 }
 
+const graph = buildGraph(connections);
+
 function partOne() {
-  const graph = buildGraph(connections);
   const groups = findTrios(graph);
   let count = 0;
   for (const trio of groups) {
@@ -49,6 +50,28 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function findMaxGroupSize(group, next) {
+  if (next.length === 0) return [...group.sort()].join(',');
+  const skip = findMaxGroupSize(group, next.slice(1));
+  const curr = next[0];
+  for (const v of group) {
+    if (!graph.get(v).has(curr)) return skip;
+  }
+  group.push(curr);
+  const take = findMaxGroupSize([...group], next.slice(1));
+  group.pop();
+  return skip.length > take.length ? skip : take;
+}
+
+function partTwo() {
+  let password = '';
+  for (const [key, value] of graph) {
+    const group = [key];
+    const nei = [...value];
+    const maxGroup = findMaxGroupSize(group, nei);
+    if (maxGroup.length >= password.length) password = maxGroup;
+  }
+  return password;
+}
 
 console.log('The answer to Part Two may be', partTwo());
