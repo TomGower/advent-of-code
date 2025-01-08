@@ -57,6 +57,17 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  const newBValue = dfs('a');
+  values.clear();
+  for (const edge of rows) {
+    const [instructions, target] = edge.split(' -> ');
+    if ('' + Number(instructions) === instructions) {
+      values.set(target, Number(instructions));
+    }
+  }
+  values.set('b', newBValue);
+  return dfs('a');
+}
 
 console.log('The answer to Part Two may be', partTwo());
