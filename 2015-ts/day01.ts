@@ -13,6 +13,12 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  let floor = 0;
+  for (let i = 0; i < values.length; i++) {
+    floor += values[i] === '(' ? 1 : -1;
+    if (floor === -1) return i + 1;
+  }
+}
 
 console.log('The answer to Part Two may be', partTwo());
