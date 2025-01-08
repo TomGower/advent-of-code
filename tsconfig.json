@@ -11,8 +11,8 @@
     "verbatimModuleSyntax": true,
     /* Strictness */
     "strict": true,
-    "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
+    "noImplicitAny": true,
     /* Node Stuff */
     "allowImportingTsExtensions": true,
     "module": "NodeNext",
