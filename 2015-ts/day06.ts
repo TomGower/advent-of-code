@@ -48,6 +48,29 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  const grid: number[][] = new Array(1000)
+    .fill(0)
+    .map((_) => new Array(1000).fill(0));
+
+  for (const {
+    type,
+    start: [startRow, startCol],
+    end: [endRow, endCol],
+  } of directions) {
+    for (let i = startRow; i <= endRow; i++) {
+      for (let j = startCol; j <= endCol; j++) {
+        if (type === 'toggle') grid[i][j] += 2;
+        if (type === 'on') grid[i][j] += 1;
+        if (type === 'off') grid[i][j] = Math.max(grid[i][j] - 1, 0);
+      }
+    }
+  }
+
+  return grid.reduce(
+    (acc, row) => acc + row.reduce((acc2, col) => acc2 + col, 0),
+    0
+  );
+}
 
 console.log('The answer to Part Two may be', partTwo());
