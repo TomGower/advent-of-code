@@ -16,8 +16,22 @@ function partOne() {
   }
 }
 
+console.time('part one');
 console.log('The answer to Part One may be', partOne());
+console.timeEnd('part one');
 
-function partTwo() {}
+function partTwo() {
+  let num = 1;
+  while (true) {
+    const hash = crypto
+      .createHash('md5')
+      .update(`${input}${num}`)
+      .digest('hex');
+    if (hash.startsWith('0'.repeat(6))) return num;
+    num++;
+  }
+}
 
+console.time('part two');
 console.log('The answer to Part Two may be', partTwo());
+console.timeEnd('part two');
