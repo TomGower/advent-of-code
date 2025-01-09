@@ -67,6 +67,17 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  let password = partOne()
+    .split('')
+    .map((v) => v.charCodeAt(0) - baseVal);
+  password = incrementPassword(password);
+
+  while (true) {
+    if (isValid(password)) break;
+    password = incrementPassword(password);
+  }
+  return password.map((v) => String.fromCharCode(baseVal + v)).join('');
+}
 
 console.log('The answer to Part Two may be', partTwo());
