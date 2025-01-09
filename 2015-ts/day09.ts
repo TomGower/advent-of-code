@@ -50,6 +50,31 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  const target = graph.size;
+  const queue: { curr: string; total: number; visited: Set<string> }[] = [];
+  for (const [a, b, dist] of trips) {
+    queue.push({ curr: a, total: +dist, visited: new Set([a, b]) });
+    queue.push({ curr: b, total: +dist, visited: new Set([a, b]) });
+  }
+  let maxDist = -Infinity;
+
+  while (queue.length) {
+    const { curr, total, visited } = queue.shift()!;
+    if (visited.size === target) {
+      maxDist = Math.max(maxDist, total);
+      continue;
+    }
+    const next = graph.get(curr)!;
+    for (const [node, dist] of next) {
+      if (visited.has(node)) continue;
+      const nextVisited = new Set(visited);
+      nextVisited.add(node);
+      queue.push({ curr: node, total: total + dist, visited: nextVisited });
+    }
+  }
+
+  return maxDist;
+}
 
 console.log('The answer to Part Two may be', partTwo());
