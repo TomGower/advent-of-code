@@ -30,6 +30,12 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  let curr = input;
+  for (let i = 0; i < 50; i++) {
+    curr = lookAndSay(curr);
+  }
+  return curr.length;
+}
 
 console.log('The answer to Part Two may be', partTwo());
