@@ -31,16 +31,16 @@ function dfs(
   }
   let max = 0;
   const neighbors = happinessGraph.get(node)!;
-  for (const [person, val] of neighbors) {
-    if (table[person].left) continue;
-    table[person].left = true;
+  for (const [nei, val] of neighbors) {
+    if (table[nei].left) continue;
+    table[nei].left = true;
     table[node].right = true;
     const curr =
       val +
-      happinessGraph.get(person)!.get(node)! +
-      dfs(person, happinessGraph, table);
+      happinessGraph.get(nei)!.get(node)! +
+      dfs(nei, happinessGraph, table);
     max = Math.max(max, curr);
-    table[person].left = false;
+    table[nei].left = false;
     table[node].right = false;
   }
   return max;
@@ -58,6 +58,19 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  const happinessGraph = parseInput(input);
+  const people = Array.from(happinessGraph.keys());
+  happinessGraph.set('me', new Map());
+  for (const p of people) {
+    happinessGraph.get('me')!.set(p, 0);
+    happinessGraph.get(p)!.set('me', 0);
+  }
+  const table: Record<string, Record<'left' | 'right', boolean>> = {};
+  for (const person of happinessGraph.keys()) {
+    table[person] = { left: false, right: false };
+  }
+  return dfs('me', happinessGraph, table);
+}
 
 console.log('The answer to Part Two may be', partTwo());
