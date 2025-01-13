@@ -3506,15 +3506,16 @@ const input = {
   },
 };
 
-function sumObject(curr: any): number {
+function sumObject(curr: any, forbidden?: string): number {
   let res = 0;
   if (Array.isArray(curr)) {
     for (const v of curr) {
-      res += sumObject(v);
+      res += sumObject(v, forbidden);
     }
   } else if (typeof curr === 'object') {
     for (let key in curr) {
-      res += sumObject(curr[key]);
+      if (forbidden && curr[key] === forbidden) return 0;
+      res += sumObject(curr[key], forbidden);
     }
   }
   if (typeof curr === 'number') return curr;
@@ -3527,6 +3528,8 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  return sumObject(input, 'red');
+}
 
 console.log('The answer to Part Two may be', partTwo());
