@@ -26,7 +26,7 @@ function parseInput(input: string) {
 
 const reindeer = parseInput(input);
 
-function findFarthestReineer(reindeer: ReindeerInfo[], time: number): number {
+function findFurthestReindeer(reindeer: ReindeerInfo[], time: number): number {
   let maxDistance = 0;
   let winner = '';
   for (const { name, flyingSpeed, flyingTime, restingTime } of reindeer) {
@@ -45,11 +45,51 @@ function findFarthestReineer(reindeer: ReindeerInfo[], time: number): number {
 }
 
 function partOne() {
-  return findFarthestReineer(reindeer, 2503);
+  return findFurthestReindeer(reindeer, 2503);
 }
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function findLeaders(reindeer: ReindeerInfo[], time: number): number {
+  const leaders: [string[], number][] = new Array(time + 1)
+    .fill(0)
+    .map((_) => [[], 0]);
+  const scores: Record<string, number> = {};
+  for (const { name, flyingSpeed, flyingTime, restingTime } of reindeer) {
+    scores[name] = 0;
+    let dist = 0;
+    let i = 0;
+    while (i <= time) {
+      for (let j = 1; j <= flyingTime; j++) {
+        if (i + j > time) break;
+        dist += flyingSpeed;
+        if (dist === leaders[i + j][1]) {
+          leaders[i + j][0].push(name);
+        } else if (dist > leaders[i + j][1]) {
+          leaders[i + j] = [[name], dist];
+        }
+      }
+      for (let j = 1; j <= restingTime; j++) {
+        if (i + flyingTime + j > time) break;
+        if (dist === leaders[i + flyingTime + j][1]) {
+          leaders[i + flyingTime + j][0].push(name);
+        } else if (dist > leaders[i + flyingTime + j][1]) {
+          leaders[i + flyingTime + j] = [[name], dist];
+        }
+      }
+      i += flyingTime + restingTime;
+    }
+  }
+  for (const [deer, _dist] of leaders) {
+    for (const d of deer) {
+      scores[d]++;
+    }
+  }
+  return Math.max(...Array.from(Object.values(scores)));
+}
+
+function partTwo() {
+  return findLeaders(reindeer, 2503);
+}
 
 console.log('The answer to Part Two may be', partTwo());
