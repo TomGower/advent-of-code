@@ -6,12 +6,6 @@ const size = 100;
 const STEPS = 100;
 const ON = '#';
 const OFF = '.';
-const testInput = `.#.#.#
-...##.
-#....#
-..#...
-#.#..#
-####..`;
 
 function countNeighbors(row: number, col: number, grid: string[][]): number {
   const upLeft = row > 0 && col > 0 && grid[row - 1][col - 1] === ON ? 1 : 0;
@@ -32,8 +26,18 @@ function getNextStatus(
   row: number,
   col: number,
   grid: string[][],
-  status: string
+  status: string,
+  isBroken: boolean = false
 ): string {
+  if (isBroken) {
+    if (
+      (row === 0 && col === 0) ||
+      (row === 0 && col === size - 1) ||
+      (row === size - 1 && col === 0) ||
+      (row === size - 1 && col === size - 1)
+    )
+      return ON;
+  }
   const neighborCount = countNeighbors(row, col, grid);
   if (status === ON) {
     if (neighborCount === 2 || neighborCount === 3) return ON;
@@ -44,19 +48,28 @@ function getNextStatus(
   }
 }
 
-function partOne() {
-  let grid = input.split('\n').map((r) => r.split(''));
-  for (let step = 0; step < STEPS; step++) {
-    const nextGrid: string[][] = new Array(size)
-      .fill(0)
-      .map((_) => new Array(size).fill(''));
-    for (let row = 0; row < size; row++) {
-      for (let col = 0; col < size; col++) {
-        nextGrid[row][col] = getNextStatus(row, col, grid, grid[row][col]);
-      }
+function createNextGrid(
+  grid: string[][],
+  isBroken: boolean = false
+): string[][] {
+  const nextGrid: string[][] = new Array(size)
+    .fill(0)
+    .map((_) => new Array(size).fill(''));
+  for (let row = 0; row < size; row++) {
+    for (let col = 0; col < size; col++) {
+      nextGrid[row][col] = getNextStatus(
+        row,
+        col,
+        grid,
+        grid[row][col],
+        isBroken
+      );
     }
-    grid = nextGrid;
   }
+  return nextGrid;
+}
+
+function countOnSquares(grid: string[][]): number {
   return grid.reduce(
     (acc, row) =>
       acc + row.reduce((rowSum, curr) => rowSum + (curr === '#' ? 1 : 0), 0),
@@ -64,8 +77,22 @@ function partOne() {
   );
 }
 
+function partOne() {
+  let grid = input.split('\n').map((r) => r.split(''));
+  for (let step = 0; step < STEPS; step++) {
+    grid = createNextGrid(grid);
+  }
+  return countOnSquares(grid);
+}
+
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  let grid = input.split('\n').map((r) => r.split(''));
+  for (let step = 0; step < STEPS; step++) {
+    grid = createNextGrid(grid, true);
+  }
+  return countOnSquares(grid);
+}
 
 console.log('The answer to Part Two may be', partTwo());
