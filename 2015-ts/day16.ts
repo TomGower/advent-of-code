@@ -15,19 +15,6 @@ type Category =
   | 'cars'
   | 'perfumes';
 
-const categoryNames = [
-  'children',
-  'cats',
-  'samoyeds',
-  'pomeranians',
-  'akitas',
-  'vizslas',
-  'goldfish',
-  'trees',
-  'cars',
-  'perfumes',
-];
-
 const correctProfile: Record<Category, number> = {
   children: 3,
   cats: 7,
@@ -73,10 +60,7 @@ function partOne() {
     for (let key in person) {
       if (key === 'idx') continue;
       const categoryKey = key as Category;
-      if (
-        correctProfile[categoryKey] === undefined ||
-        person[categoryKey] !== correctProfile[categoryKey]
-      ) {
+      if (person[categoryKey] !== correctProfile[categoryKey]) {
         isValid = false;
         break;
       }
@@ -88,6 +72,36 @@ function partOne() {
 
 console.log('The answer to Part One may be', partOne());
 
-function partTwo() {}
+function partTwo() {
+  let res = 0;
+  for (const person of sues) {
+    let isValid = true;
+    for (let key in person) {
+      if (key === 'idx') continue;
+      const categoryKey = key as Category;
+      if (categoryKey === 'cats' || categoryKey === 'trees') {
+        if (person[categoryKey] <= correctProfile[categoryKey]) {
+          isValid = false;
+          break;
+        }
+      } else if (categoryKey === 'pomeranians' || categoryKey === 'goldfish') {
+        if (person[categoryKey] >= correctProfile[categoryKey]) {
+          isValid = false;
+          break;
+        }
+      } else {
+        if (
+          correctProfile[categoryKey] === undefined ||
+          person[categoryKey] !== correctProfile[categoryKey]
+        ) {
+          isValid = false;
+          break;
+        }
+      }
+    }
+    if (isValid) res = person.idx;
+  }
+  return res;
+}
 
 console.log('The answer to Part Two may be', partTwo());
