@@ -5,7 +5,7 @@ const input = readFileSync(__dirname + '/inputs/day20.input', 'utf8');
 const inputValue = parseInt(input);
 
 function getFactorTotal(val: number): number {
-  const sqrt = Math.sqrt(val);
+  const sqrt = Math.ceil(Math.sqrt(val));
   let total = 0;
   for (let i = 1; i < sqrt; i++) {
     if (val % i === 0) {
@@ -26,8 +26,27 @@ function partOne() {
   }
 }
 
+console.time('one');
 console.log('The answer to Part One may be', partOne());
+console.timeEnd('one');
 
-function partTwo() {}
+function partTwo() {
+  const target = inputValue / 11;
+  let max = target;
+  const vals = new Map();
+  for (let i = 1; i <= max; i++) {
+    inner: for (let j = 1; j <= 50; j++) {
+      const product = i * j;
+      if (product >= max) break inner;
+      vals.set(product, (vals.get(product) ?? 0) + i);
+      if (vals.get(product) >= target) {
+        max = product;
+      }
+    }
+  }
+  return max;
+}
 
+console.time('two');
 console.log('The answer to Part Two may be', partTwo());
+console.timeEnd('two');
