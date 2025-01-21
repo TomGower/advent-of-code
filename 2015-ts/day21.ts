@@ -38,7 +38,6 @@ function createCombinations(
   const res: number[][] = [...weapons];
   let len = res.length;
   for (const [ca, aa, da] of armor) {
-    res.push([ca, aa, da]);
     for (let i = 0; i < len; i++) {
       const [cost, att, def] = res[i];
       res.push([ca + cost, aa + att, da + def]);
@@ -47,7 +46,6 @@ function createCombinations(
   len = res.length;
   for (let i = 0; i < rings.length; i++) {
     const [ca, aa, da] = rings[i];
-    res.push([ca, aa, da]);
     for (let j = 0; j < len; j++) {
       const [cost, att, def] = res[j];
       res.push([ca + cost, aa + att, da + def]);
@@ -91,7 +89,17 @@ console.time('one');
 console.log('The answer to Part One may be', partOne());
 console.timeEnd('one');
 
-function partTwo() {}
+function partTwo() {
+  let maxLosingCost = -Infinity;
+  for (const [cost, att, def] of possibleCombinations) {
+    if (cost < maxLosingCost) continue;
+    if (!doesPlayerWin([100, att, def], bossStats)) {
+      console.log('player loses at', cost, att, def);
+      maxLosingCost = cost;
+    }
+  }
+  return maxLosingCost;
+}
 
 console.time('two');
 console.log('The answer to Part Two may be', partTwo());
