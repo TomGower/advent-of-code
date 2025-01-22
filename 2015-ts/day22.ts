@@ -7,7 +7,7 @@ const bossStats = input
   .map((v) => v.split(': ')[1])
   .map(Number) as [number, number];
 
-const playerStats = [50, 500, 0];
+const playerStats: [number, number] = [50, 500];
 
 type Spell = 'magic missile' | 'drain' | 'shield' | 'poison' | 'recharge';
 
@@ -47,8 +47,8 @@ const spells: Record<Spell, any> = {
 function canPlayerWinFight(
   manaAvailable: number,
   hurtPlayer: boolean = false,
-  playerInfo: [number, number] = [50, 500], // [HP, Mana, Armor]
-  bossInfo: [number, number] = bossStats, // [HP, Damage]
+  playerInfo: [number, number] = playerStats,
+  bossInfo: [number, number] = bossStats,
   effects: Record<
     string,
     { duration: number; damage?: number; mana?: number; armor?: number }
@@ -59,7 +59,6 @@ function canPlayerWinFight(
   let parmor = 0;
   let [bhp, batt] = bossInfo;
 
-  // Clone effects to avoid contamination
   const nextEffects: Record<
     string,
     { duration: number; damage?: number; mana?: number; armor?: number }
@@ -68,7 +67,6 @@ function canPlayerWinFight(
     nextEffects[key] = { ...effects[key] };
   }
 
-  // Apply effects
   for (const key in nextEffects) {
     if (nextEffects[key].duration > 0) {
       if (key === 'poison') bhp -= nextEffects[key].damage!;
@@ -77,27 +75,24 @@ function canPlayerWinFight(
         if (key === 'shield') parmor = nextEffects[key].armor!;
       nextEffects[key].duration -= 1;
     }
-    if (nextEffects[key].duration === 0) delete nextEffects[key]; // Expire effect
+    if (nextEffects[key].duration === 0) delete nextEffects[key];
   }
 
-  // Check for victory/defeat after effects
   if (bhp <= 0) return true;
   if (php <= 0) return false;
 
   if (turn % 2 === 0) {
-    // Player's turn
     if (hurtPlayer) {
       php--;
       if (php <= 0) return false;
     }
 
-    // Try all spells
     for (const spellKey in spells) {
       const spell = spells[spellKey as Spell];
       if (pmana < spell.cost || manaAvailable < spell.cost || effects[spellKey])
-        continue; // Skip if mana is insufficient or effect is active
+        continue;
 
-      const newEffects = cloneEffects(nextEffects); // Clone effects for this branch
+      const newEffects = cloneEffects(nextEffects);
       let newPHP = php;
       let newBHP = bhp;
       let newPMana = pmana - spell.cost;
@@ -112,7 +107,7 @@ function canPlayerWinFight(
       if (
         canPlayerWinFight(
           manaAvailable - spell.cost,
-          hurtPlayer, // Reset hurtPlayer for subsequent turns
+          hurtPlayer,
           [newPHP, newPMana],
           [newBHP, batt],
           newEffects,
@@ -122,17 +117,16 @@ function canPlayerWinFight(
         return true;
     }
 
-    return false; // No valid spell to cast
+    return false;
   } else {
-    // Boss's turn
     const damage = Math.max(1, batt - parmor);
-    php -= damage;
+    const newEffects = cloneEffects(nextEffects);
     return canPlayerWinFight(
       manaAvailable,
       hurtPlayer,
-      [php, pmana],
+      [php - damage, pmana],
       [bhp, batt],
-      nextEffects,
+      newEffects,
       turn + 1
     );
   }
@@ -146,23 +140,23 @@ function cloneEffects(
 ): typeof effects {
   const cloned: typeof effects = {};
   for (const key in effects) {
-    cloned[key] = { ...effects[key] }; // Shallow copy of each effect
+    cloned[key] = { ...effects[key] };
   }
   return cloned;
 }
 
 function partOne() {
   let lo = 0;
-  let hi = 10 ** 5; // Reasonable mana upper bound
+  let hi = 10 ** 5;
   let res = Infinity;
 
   while (lo <= hi) {
     const mid = Math.floor((lo + hi) / 2);
     if (canPlayerWinFight(mid)) {
-      res = mid; // Track minimum mana spent
-      hi = mid - 1; // Search for smaller mana
+      res = mid;
+      hi = mid - 1;
     } else {
-      lo = mid + 1; // Increase mana if player loses
+      lo = mid + 1;
     }
   }
 
@@ -170,7 +164,7 @@ function partOne() {
 }
 
 console.time('one');
-console.log('The answer to Part One may be', partOne(), 's/b 953');
+console.log('The answer to Part One may be', partOne());
 console.timeEnd('one');
 
 function partTwo() {
@@ -190,5 +184,5 @@ function partTwo() {
 }
 
 console.time('two');
-console.log('The answer to Part Two may be', partTwo(), 's/b 1289');
+console.log('The answer to Part Two may be', partTwo());
 console.timeEnd('two');
