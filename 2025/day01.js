@@ -18,4 +18,31 @@ function partOne() {
   return res;
 }
 
-console.log('the answer to part one may be', partOne());
+console.log('the answer to Part One may be', partOne());
+
+function partTwo() {
+  const mod = 100;
+  let curr = 50;
+  let res = 0;
+  for (const row of values) {
+    const steps = parseInt(row.slice(1));
+    if (row[0] === 'L') {
+      if (curr === 0) res--;
+      curr -= steps;
+      while (curr < 0) {
+        curr += mod;
+        res++;
+      }
+      if (curr === 0) res++;
+    } else {
+      curr += steps;
+      while (curr >= 100) {
+        res++;
+        curr -= mod;
+      }
+    }
+  }
+  return res;
+}
+
+console.log('the answer to Part Two may be', partTwo());
