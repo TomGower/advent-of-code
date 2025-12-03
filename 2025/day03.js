@@ -27,3 +27,29 @@ function partOne() {
 }
 
 console.log('the answer to Part One may be', partOne());
+
+function getMaxValue(battery) {
+  const res = [];
+  let lastIdx = -1;
+  while (res.length < 12) {
+    let max = 0;
+    let maxIdx = battery.length;
+    for (let i = battery.length - (12 - res.length); i > lastIdx; i--) {
+      if (battery[i] > max) max = battery[i];
+      if (battery[i] === max) maxIdx = i;
+    }
+    res.push(max);
+    lastIdx = maxIdx;
+  }
+  return +res.join('');
+}
+
+function partTwo() {
+  let sum = 0;
+  for (const battery of values) {
+    sum += getMaxValue(battery);
+  }
+  return sum;
+}
+
+console.log('the answer to Part Two may be', partTwo());
