@@ -1,4 +1,4 @@
-import { access, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
 const values = readFileSync(__dirname + '/inputs/day04.input', 'utf8').split(
@@ -44,3 +44,30 @@ function partOne() {
 }
 
 console.log('the answer to Part One may be', partOne());
+
+function calculateAndUpdate(mat, grid) {
+  let res = 0;
+  for (let i = 0; i < mat.length; i++) {
+    for (let j = 0; j < mat[0].length; j++) {
+      if (mat[i][j] < 4) {
+        res++;
+        grid[i][j] = '.';
+      }
+    }
+  }
+  return res;
+}
+
+function partTwo() {
+  let res = 0;
+  const grid = values.map((v) => v.split(''));
+  while (true) {
+    const mat = createAdjacencyMap(grid);
+    const score = calculateAndUpdate(mat, grid);
+    if (score === 0) break;
+    res += score;
+  }
+  return res;
+}
+
+console.log('the answer to Part Two may be', partTwo());
