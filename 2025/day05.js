@@ -5,6 +5,7 @@ const input = readFileSync(__dirname + '/inputs/day05.input', 'utf8');
 const [ranges, ingredients] = input.split('\n\n').map((v) => v.split('\n'));
 const parsedRanges = ranges.map((v) => v.split('-').map(BigInt));
 const parsedIngredients = ingredients.map(BigInt);
+const sortedRanges = mergeIntervals(parsedRanges);
 
 function mergeIntervals(intervals) {
   intervals.sort((a, b) => {
@@ -23,7 +24,6 @@ function mergeIntervals(intervals) {
 }
 
 function partOne() {
-  const sortedRanges = mergeIntervals(parsedRanges);
   const sortedIngredients = parsedIngredients.sort((a, b) => {
     if (a < b) return -1;
     return 1;
@@ -48,3 +48,13 @@ function partOne() {
 }
 
 console.log('the answer to Part One may be', partOne());
+
+function partTwo() {
+  let res = BigInt(0);
+  for (const [start, end] of sortedRanges) {
+    res = res + end - start + BigInt(1);
+  }
+  return res;
+}
+
+console.log('the answer to Part Two may be', partTwo());
