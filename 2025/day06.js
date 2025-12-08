@@ -29,3 +29,36 @@ function partOne() {
 }
 
 console.log('the answer to Part One may be', partOne());
+
+function partTwo() {
+  const rowInput = input.split('\n');
+  const operations = rowInput.pop();
+  const indices = [];
+  for (let i = 0; i < operations.length; i++) {
+    if (operations[i] !== ' ') indices.push(i);
+  }
+  indices.push(operations.length + 1);
+  let res = 0;
+  for (let i = 0; i < indices.length - 1; i++) {
+    const rawNumbers = [];
+    for (let j = 0; j < rowInput.length; j++) {
+      rawNumbers.push(rowInput[j].slice(indices[i], indices[i + 1] - 1));
+    }
+    const numbers = [];
+    for (let j = 0; j < rawNumbers[0].length; j++) {
+      let num = '';
+      for (let k = 0; k < 4; k++) {
+        num += rawNumbers[k][j];
+      }
+      numbers.push(+num);
+    }
+    if (operations[indices[i]] === '+') {
+      res += numbers.reduce((acc, curr) => acc + curr, 0);
+    } else {
+      res += numbers.reduce((acc, curr) => acc * curr, 1);
+    }
+  }
+  return res;
+}
+
+console.log('the answer to Part Two may be', partTwo());
