@@ -1,4 +1,4 @@
-import { fstat, readFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import path from 'path';
 const __dirname = path.resolve(path.dirname(''));
 const input = readFileSync(__dirname + '/inputs/day11.input', 'utf8');
@@ -20,22 +20,39 @@ function buildGraph(rows) {
   return map;
 }
 
-function dfs(node, graph, memo) {
-  if (memo.has(node)) return memo.get(node);
+const graph = buildGraph(rows);
+
+function dfs(node, graph, memo, fftVisited = true, dacVisited = true) {
+  const key = `${node}~${fftVisited}~${dacVisited}`;
+  if (memo.has(key)) return memo.get(key);
   let count = 0;
   const destinations = graph.get(node) ?? [];
   for (const adj of destinations) {
-    if (adj === 'out') return 1;
-    count += dfs(adj, graph, memo);
+    if (adj === 'out') {
+      return fftVisited && dacVisited ? 1 : 0;
+    }
+    if (adj === 'fft') {
+      count += dfs(adj, graph, memo, true, dacVisited);
+    } else if (adj === 'dac') {
+      count += dfs(adj, graph, memo, fftVisited, true);
+    } else {
+      count += dfs(adj, graph, memo, fftVisited, dacVisited);
+    }
   }
-  memo.set(node, count);
+  memo.set(key, count);
   return count;
 }
 
 function partOne() {
-  const graph = buildGraph(rows);
   const memo = new Map();
   return dfs('you', graph, memo);
 }
 
 console.log('the answer to Part One may be', partOne());
+
+function partTwo() {
+  const memo = new Map();
+  return dfs('svr', graph, memo, false, false);
+}
+
+console.log('the answer to Part Two may be', partTwo());
