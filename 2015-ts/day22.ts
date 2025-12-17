@@ -59,6 +59,10 @@ function canPlayerWinFight(
   let parmor = 0;
   let [bhp, batt] = bossInfo;
 
+  if (hurtPlayer && turn % 2 === 0) {
+    php--;
+  }
+
   const nextEffects: Record<
     string,
     { duration: number; damage?: number; mana?: number; armor?: number }
@@ -71,26 +75,21 @@ function canPlayerWinFight(
     if (nextEffects[key].duration > 0) {
       if (key === 'poison') bhp -= nextEffects[key].damage!;
       if (key === 'recharge') pmana += nextEffects[key].mana!;
-      if (nextEffects[key].duration >= 0)
+      if (nextEffects[key].duration >= 0) {
         if (key === 'shield') parmor = nextEffects[key].armor!;
+      }
       nextEffects[key].duration -= 1;
     }
     if (nextEffects[key].duration === 0) delete nextEffects[key];
   }
 
-  if (bhp <= 0) return true;
   if (php <= 0) return false;
+  if (bhp <= 0) return true;
 
   if (turn % 2 === 0) {
-    if (hurtPlayer) {
-      php--;
-      if (php <= 0) return false;
-    }
-
     for (const spellKey in spells) {
       const spell = spells[spellKey as Spell];
-      if (pmana < spell.cost || manaAvailable < spell.cost || effects[spellKey])
-        continue;
+      if (pmana < spell.cost || manaAvailable < spell.cost) continue;
 
       const newEffects = cloneEffects(nextEffects);
       let newPHP = php;
@@ -167,6 +166,7 @@ console.time('one');
 console.log('The answer to Part One may be', partOne());
 console.timeEnd('one');
 
+// this is wrong, s/b 1289
 function partTwo() {
   let lo = 0;
   let hi = 10 ** 5;
@@ -182,6 +182,8 @@ function partTwo() {
   }
   return res;
 }
+
+console.log(canPlayerWinFight(1290, true));
 
 console.time('two');
 console.log('The answer to Part Two may be', partTwo());
